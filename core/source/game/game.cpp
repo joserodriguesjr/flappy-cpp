@@ -1,41 +1,61 @@
-#include "game.h"
-#include "constants.h"
+#include "game/game.hpp"
 
-void init_game(GameState *g, Server *svr, Floor *f, Player *p, Background *b,
-               Score *s) {
-  g->online = false;
-  g->hosting = false;
-  g->pause = true;
-  g->started = false;
-  g->gravity = GRAVITY;
-  g->deltaTime = 0.0f;
-  g->server = svr;
-  g->floor = f;
-  g->player = p;
-  g->background = b;
-  g->score = s;
-}
+const unsigned int GRAVITY = 1400;
 
-int game_host(GameState *g, pthread_t *thread) {
-  g->online = true;
-  g->hosting = true;
-  start_server();
-  int result = pthread_create(thread, NULL, wait_for_client, NULL);
-  return result;
-}
+GameState::GameState(Server *svr, Scenario *scn, Player *p, Score *s)
+    : online(false), hosting(false), pause(true), started(false),
+      gravity(GRAVITY), deltaTime(0), server(svr), scenario(scn), player(p),
+      score(s) {}
 
-int game_client(GameState *g, pthread_t *thread) {
-  g->online = true;
-  start_client();
-  int result = pthread_create(thread, NULL, wait_for_server, NULL);
-  return result;
-}
+GameState::~GameState() {}
 
-void game_update_state(GameState *g, float deltaTime) {
-  g->deltaTime = deltaTime;
-}
+// #define PLAYER_START_POSITION_X 300.0f
+// #define PLAYER_START_POSITION_Y 400.0f
 
-void game_sounds(GameState *g, Sound deathSound, Sound backgroundMusic) {
+// void GameState::restartGame(PipeManager *pipeManager, Player *onlinePlayer) {
+//   // TODO: Criar metodos para reiniciar os objetos do player e cano
+//   GameState::player->alive = true;
+//   GameState::player->position.y = PLAYER_START_POSITION_Y;
+//   GameState::player->velocity = (Vector2){0.0f, 0.0f};
+//   GameState::player->spinDegree = 0;
+//   GameState::player->tiltAngle = 0;
+//   GameState::player->color.a = 255;
+
+//   onlinePlayer->position.y = PLAYER_START_POSITION_Y;
+//   onlinePlayer->velocity = (Vector2){0.0f, 0.0f};
+//   onlinePlayer->spinDegree = 0;
+//   onlinePlayer->tiltAngle = 0;
+
+//   GameState::score->value = 0;
+//   GameState::pause = true;
+//   GameState::started = false;
+
+//   // TODO: Send pipe info to client
+//   for (int i = 0; i < MAX_PIPE_COUNT; i++) {
+//     Pipe pipe;
+//     pipeManager->_random_pipe(pipeManager, &pipe, i);
+//     pipeManager->pipes[i] = pipe;
+//   }
+// }
+
+// int GameState::host(pthread_t *thread) {
+//   GameState::online = true;
+//   GameState::hosting = true;
+//   start_server();
+//   int result = pthread_create(thread, NULL, wait_for_client, NULL);
+//   return result;
+// }
+
+// int GameState::client(pthread_t *thread) {
+//   GameState::online = true;
+//   start_client();
+//   int result = pthread_create(thread, NULL, wait_for_server, NULL);
+//   return result;
+// }
+
+void GameState::update(float deltaTime) { GameState::deltaTime = deltaTime; }
+
+void GameState::sounds(Sound deathSound, Sound backgroundMusic) {
   // Background Music
   {
     if (!IsSoundPlaying(backgroundMusic)) {
@@ -45,8 +65,8 @@ void game_sounds(GameState *g, Sound deathSound, Sound backgroundMusic) {
   }
 
   // Death sound
-  bool visible = g->player->color.a != 0;
-  bool dead = !g->player->alive;
+  bool visible = GameState::player->color.a != 0;
+  bool dead = !GameState::player->alive;
   if (dead && visible) {
     if (!IsSoundPlaying(deathSound)) {
       SetSoundVolume(deathSound, 0.5);
@@ -55,9 +75,9 @@ void game_sounds(GameState *g, Sound deathSound, Sound backgroundMusic) {
   }
 }
 
-void game_draw_pause_screen(GameState *g) {
+void GameState::render_pause_screen() {
   const char *text;
-  if (g->online && !g->hosting)
+  if (GameState::online && !GameState::hosting)
     text = "Wait for host to start";
   else
     text = "Press space to start";
@@ -80,7 +100,7 @@ void game_draw_pause_screen(GameState *g) {
   DrawText(text, x, y, fontSize, WHITE);
 }
 
-void game_draw_buttons(void) {
+void GameState::render_buttons() {
   // Buttons
   DrawRectangle(5, GetScreenHeight() - 105, 245, 95, (Color){0, 0, 0, 100});
   DrawText("Spacebar - Jump", 10, GetScreenHeight() - 100, 20, WHITE);

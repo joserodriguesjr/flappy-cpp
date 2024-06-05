@@ -1,6 +1,6 @@
 #include "network.h"
 #include "globals.h"
-#include "player/player.h"
+#include "player/player.hpp"
 #include "pubsub/pubsub.h"
 #include <cstdio>
 #include <cstring>

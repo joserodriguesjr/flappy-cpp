@@ -4,7 +4,7 @@
 
 #include "globals.h"
 #include "network/network.h"
-#include "player/player.h"
+#include "player/player.hpp"
 #include "pubsub.h"
 
 #define MAX_SUBSCRIBERS 10
@@ -62,7 +62,7 @@ void Publish(const char *eventType, const char *eventData) {
 
 void handle_in_network_messages(const char *eventData) {
   if (strcmp(eventData, NM_PLAYER_JUMP) == 0) {
-    player_jump(global_onlinePlayer);
+    Player::player_jump(global_onlinePlayer);
   }
 
   else if (strcmp(eventData, NM_GAME_START) == 0) {
@@ -75,7 +75,7 @@ void handle_in_network_messages(const char *eventData) {
     GameState *gameState = (GameState *)global_gameState;
     PipeManager *pipeManager = (PipeManager *)global_pipeManager;
     Player *onlinePlayer = (Player *)global_onlinePlayer;
-    restart_game(gameState, pipeManager, onlinePlayer);
+    // restart_game(gameState, pipeManager, onlinePlayer);
   }
 }
 
@@ -135,6 +135,6 @@ void handle_key_pressed(const char *eventData) {
     GameState *gameState = (GameState *)global_gameState;
     if (gameState->online)
       Publish(EVENT_OUT_NETWORK_MESSAGE, NM_PLAYER_JUMP);
-    player_jump(global_player);
+    Player::player_jump(global_player);
   }
 }

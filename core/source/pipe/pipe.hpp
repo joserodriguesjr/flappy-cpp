@@ -1,9 +1,10 @@
-#ifndef PIPES_H
-#define PIPES_H
+#pragma once
 
-#include "constants.h"
-#include "game/game.h"
+#include "game/game.hpp"
 #include "raylib.h"
+
+const unsigned int MAX_PIPE_COUNT = 7;
+const unsigned int LAST_PIPE = MAX_PIPE_COUNT - 1;
 
 typedef struct Pipe {
   float topPipeStart;
@@ -12,7 +13,9 @@ typedef struct Pipe {
   bool jumped;
 } Pipe;
 
-typedef struct PipeManager {
+class PipeManager {
+private:
+public:
   Pipe pipes[MAX_PIPE_COUNT];
   Texture2D bottomPipeTexture;
   Texture2D topPipeTexture;
@@ -23,7 +26,17 @@ typedef struct PipeManager {
   int incDifMaxHeight;
   int obstacleVelocity;
   int incObstacleVelocity;
-} PipeManager;
+
+  PipeManager();
+  ~PipeManager();
+
+  void movement(void *gameState);
+  void render();
+
+  void _random_pipe(PipeManager *pipeManager, Pipe *pipe, int i);
+  bool _pipe_collision(GameState *gameState, PipeManager *pipeManager,
+                       Pipe pipe);
+};
 
 // TODO: Implementar parametros dentro do pipeManager
 // ★ gap: indica o espaço livre inicial nos obstáculos para o jogador passar (em
@@ -35,16 +48,3 @@ typedef struct PipeManager {
 // velocidade inicial dos obstáculos em relação ao personagem.(em pixels) ★
 // inc_vel_obstaculos: indica o quanto a velocidade dos obstáculos deve ser
 // incrementada a cada aumento de dificuldade. (empixels)
-
-void init_pipe_manager(PipeManager *pipeManager, Texture2D bottomPipeTexture,
-                       Texture2D topPipeTexture);
-
-void _random_pipe(PipeManager *pipeManager, Pipe *pipe, int i);
-
-void pipe_movement(void *gameState, PipeManager *pipeManager);
-
-void pipe_animation(PipeManager *pipeManager);
-
-bool _pipe_collision(GameState *gameState, PipeManager *pipeManager, Pipe pipe);
-
-#endif // PIPE_H
