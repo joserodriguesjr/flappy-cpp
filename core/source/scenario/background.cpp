@@ -1,4 +1,4 @@
-#include "background/background.h"
+#include "background.hpp"
 #include "constants.h"
 #include "game/game.h"
 

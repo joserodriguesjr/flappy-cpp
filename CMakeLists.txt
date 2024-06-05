@@ -27,8 +27,8 @@ find_package(Threads REQUIRED)
 # App
 add_executable(app 
     app/source/main.cpp
-    core/source/background/background.cpp
-    core/source/floor/floor.cpp
+    core/source/scenario/background.cpp
+    core/source/scenario/floor.cpp
     core/source/game/game.cpp
     core/source/network/network.cpp
     core/source/pipe/pipe.cpp

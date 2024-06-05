@@ -1,10 +1,10 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
-#include "background/background.h"
-#include "floor/floor.h"
 #include "network/network.h"
 #include "player/player.h"
+#include "scenario/background.hpp"
+#include "scenario/floor.hpp"
 #include "score/score.h"
 
 typedef struct GameState {

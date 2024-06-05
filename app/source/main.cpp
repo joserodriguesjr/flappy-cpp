@@ -5,20 +5,21 @@
 
 #include "raylib.h"
 
-#include "background/background.h"
 #include "constants.h"
-#include "floor/floor.h"
 #include "game/game.h"
 #include "globals.h"
 #include "network/network.h"
 #include "pipe/pipe.h"
 #include "player/player.h"
 #include "pubsub/pubsub.h"
+#include "scenario/background.hpp"
+#include "scenario/floor.hpp"
 #include "score/score.h"
 
 // TODO: add more players
 // #define MAX_PLAYERS 4
 
+// todo Singleton
 void *global_gameState;
 void *global_pipeManager;
 void *global_player;
@@ -54,7 +55,7 @@ void restart_game(GameState *gameState, PipeManager *pipeManager,
 
 // TODO: add DEBUG INFO through args ---> int main( int argc, char **argv )
 // TODO : use const
-int main(void) {
+int main(int argc, char *argv[]) {
   // Initialization
   //--------------------------------------------------------------------------------------
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "FlappyInf");
