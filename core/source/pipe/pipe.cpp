@@ -35,16 +35,16 @@ void PipeManager::movement() {
     else
       PipeManager::pipes[i].x = newPosition;
 
-    // TODO: Adicionar animacao para ele sumindo
-    // Verifique se o tubo foi passado para gerar novo
-    // Quando o cano chegar no eixo X = 0, ele ira se tornar o ultimo cano da
-    // lista E um novo cano sera gerado em sua posicao da lista, com novos
-    // valores
+    // Verifique se o tubo foi passado para gerar novo. Quando o cano chegar no
+    // eixo X = 0, ele ira se tornar o ultimo cano da lista e um novo cano sera
+    // gerado em sua posicao da lista, com novos valores
     if (PipeManager::pipes[i].x == 0) {
       PipeManager::pipes[LAST_PIPE].bottomPipeStart =
           PipeManager::pipes[i].bottomPipeStart;
+
       PipeManager::pipes[LAST_PIPE].topPipeStart =
           PipeManager::pipes[i].topPipeStart;
+
       PipeManager::pipes[LAST_PIPE].x = PipeManager::pipes[i].x;
       randomPipe(&PipeManager::pipes[i], 0);
       PipeManager::pipes[i].x = GetScreenWidth() + (2 * PipeManager::offset);
@@ -54,6 +54,7 @@ void PipeManager::movement() {
     bool pipeCloseToPlayer =
         PipeManager::pipes[i].x < (PLAYER_START_POSITION_X + 50) &&
         PipeManager::pipes[i].x > (PLAYER_START_POSITION_X - 50);
+
     if (pipeCloseToPlayer) {
       // Verifica se acertou cano para cada cano perto do jogador
       if (PipeManager::pipeCollision(PipeManager::pipes[i])) {

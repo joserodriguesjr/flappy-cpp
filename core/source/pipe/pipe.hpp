@@ -9,6 +9,7 @@ typedef struct Pipe {
   float topPipeStart;
   float bottomPipeStart;
   float x;
+  // Se removido [jumped], irá contar pontos enquanto o jogador estiver no vão
   bool jumped;
 } Pipe;
 
