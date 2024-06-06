@@ -1,10 +1,13 @@
 #include "game/game.hpp"
 #include "pipe/pipe.hpp"
+#include "player/player.hpp"
+#include "score/score.hpp"
 
 GameState::GameState()
-    : server(nullptr), scenario(nullptr), player(nullptr), score(nullptr),
-      pipeManager(nullptr), online(false), hosting(false), pause(true),
-      started(false), deltaTime(0) {}
+    : online(false), hosting(false), pause(true), started(false), deltaTime(0) {
+}
+
+GameState::~GameState() {}
 
 GameState &GameState::instance() {
   static GameState INSTANCE;

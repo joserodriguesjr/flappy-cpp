@@ -3,8 +3,13 @@
 #include "raylib.h"
 
 #include "game/game.hpp"
+
+#include "network/network.h"
+#include "pipe/pipe.hpp"
+#include "player/player.hpp"
+#include "scenario/scenario.hpp"
+#include "score/score.hpp"
 #include "sound/sound.hpp"
-// #include "network/network.h"
 // #include "pubsub/pubsub.h"
 
 int main(int argc, char *argv[]) {
@@ -107,9 +112,11 @@ int main(int argc, char *argv[]) {
 
       // Update positions
       //----------------------------------------------------------------------------------
-      game.getScenario()->movement();
-      game.getPipeManager()->movement();
-      game.getPlayer()->movement();
+      if (player.alive) {
+        game.getScenario()->movement();
+        game.getPipeManager()->movement();
+        game.getPlayer()->movement();
+      }
       // if (game.online)
       //   onlinePlayer.movement();
       // Publish(EVENT_MOVEMENT, GRAVITY, &game);

@@ -1,15 +1,14 @@
 #pragma once
 
-#include "network/network.h"
-#include "pipe/pipe.hpp"
-#include "player/player.hpp"
-#include "scenario/scenario.hpp"
-#include "score/score.hpp"
-#include "sound/sound.hpp"
+#include <pthread.h>
 
-// TODO: remove
-// #define PLAYER_START_POSITION_X 300.0f
-// #define PLAYER_START_POSITION_Y 400.0f
+class Player;
+class Server;
+class Scenario;
+class Score;
+class PipeManager;
+class SoundManager;
+
 const unsigned int GRAVITY = 1400;
 const int PLAYER_START_POSITION_X = 300;
 const int PLAYER_START_POSITION_Y = 400;
@@ -17,12 +16,18 @@ const int PLAYER_START_POSITION_Y = 400;
 class GameState {
 private:
   GameState();
-  Server *server;
-  Scenario *scenario;
-  Player *player;
-  Score *score;
-  PipeManager *pipeManager;
-  SoundManager *soundManager;
+  ~GameState();
+
+  // Prevent copy construction and assignment
+  GameState(const GameState &) = delete;
+  GameState &operator=(const GameState &) = delete;
+
+  Server *server = nullptr;
+  Scenario *scenario = nullptr;
+  Player *player = nullptr;
+  Score *score = nullptr;
+  PipeManager *pipeManager = nullptr;
+  SoundManager *soundManager = nullptr;
 
 public:
   bool online;
@@ -34,21 +39,17 @@ public:
   static GameState &instance();
 
   Server *getServer() const { return server; }
-  void setServer(Server *svr) { server = svr; }
-
-  Player *getPlayer() const { return player; }
-  void setPlayer(Player *p) { player = p; }
-
   Scenario *getScenario() const { return scenario; }
-  void setScenario(Scenario *scn) { scenario = scn; }
-
+  Player *getPlayer() const { return player; }
   Score *getScore() const { return score; }
-  void setScore(Score *scr) { score = scr; }
-
   PipeManager *getPipeManager() const { return pipeManager; }
-  void setPipeManager(PipeManager *pm) { pipeManager = pm; }
-
   SoundManager *getSoundManager() const { return soundManager; }
+
+  void setServer(Server *svr) { server = svr; }
+  void setScenario(Scenario *scn) { scenario = scn; }
+  void setPlayer(Player *p) { player = p; }
+  void setScore(Score *scr) { score = scr; }
+  void setPipeManager(PipeManager *pm) { pipeManager = pm; }
   void setSoundManager(SoundManager *sm) { soundManager = sm; }
 
   // void restartGame(Player *onlinePlayer);

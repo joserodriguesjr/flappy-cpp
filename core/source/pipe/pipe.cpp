@@ -1,6 +1,7 @@
 #include "pipe.hpp"
 #include "game/game.hpp"
-#include <cstdio>
+#include "player/player.hpp"
+#include "score/score.hpp"
 
 PipeManager::PipeManager()
     : bottomPipeTexture(LoadTexture("resources/obstacles/bottomPipe.png")),
@@ -23,9 +24,6 @@ PipeManager::~PipeManager() {
 
 void PipeManager::movement() {
   GameState &gameState = GameState::instance();
-
-  if (!gameState.getPlayer()->alive)
-    return;
 
   for (int i = 0; i < MAX_PIPE_COUNT; i++) {
     // Atualizar posição dos tubos

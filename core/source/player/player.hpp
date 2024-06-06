@@ -15,11 +15,11 @@ private:
   float tiltAngle;
   int *sockfd;
   bool local;
+  Color color;
 
 public:
   Texture2D current;
   Vector2 position;
-  Color color;
   bool alive;
 
   Player(int *sockfd, bool local);

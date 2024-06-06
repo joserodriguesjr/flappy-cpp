@@ -21,9 +21,6 @@ Scenario::~Scenario() {
 void Scenario::movement() {
   GameState &game = GameState::instance();
 
-  if (!game.getPlayer()->alive)
-    return;
-
   // If the offset is greater than the texture width, reset it to create a
   // looping effect
 

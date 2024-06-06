@@ -1,8 +1,9 @@
 #include "player.hpp"
 #include "game/game.hpp"
+#include "scenario/scenario.hpp"
+#include "sprite/sprite.hpp"
 // #include "network/network.h"
 // #include "pubsub/pubsub.h"
-#include "sprite/sprite.hpp"
 
 Player::Player(int *sockfd, bool local)
     : sockfd(sockfd), local(local), velocity({0, 0}),

@@ -1,5 +1,6 @@
 #include "sound/sound.hpp"
 #include "game/game.hpp"
+#include "player/player.hpp"
 
 SoundManager::SoundManager()
     : backgroundMusic(LoadSound("resources/audio/bg_blackops.mp3")),
@@ -25,13 +26,11 @@ void SoundManager::playDeathSound() {
 }
 
 void SoundManager::play() {
-  GameState gameState = GameState::instance();
+  GameState &gameState = GameState::instance();
 
   playBackgroundMusic();
 
-  bool visible = gameState.getPlayer()->color.a != 0;
   bool dead = !gameState.getPlayer()->alive;
-  if (dead && visible) {
+  if (dead)
     playDeathSound();
-  }
 }
