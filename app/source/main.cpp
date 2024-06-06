@@ -157,14 +157,14 @@ int main(int argc, char *argv[]) {
 
     scenario.render();
     pipeManager.render();
-    scenario.floor_render();
+    scenario.renderFloor();
     player.render();
     // if (game.online)
     //   onlinePlayer.render();
     score.render();
-    game.render_buttons();
+    game.renderButtons();
     if (game.pause)
-      game.render_pause_screen();
+      game.renderPauseScreen();
 
     renderer->Draw();
     //----------------------------------------------------------------------------------

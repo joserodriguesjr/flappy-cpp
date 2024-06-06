@@ -10,7 +10,7 @@ Player::Player(int *sockfd, bool local)
       jumpSpeed(PLAYER_JUMPSPEED), alive(true), spinDegree(0), tiltAngle(0) {
 
   Image spriteImage = LoadImage("resources/flappy/flappy_mov_red_big.png");
-  Player::textures = Sprite::load_textures(spriteImage, NUMBER_SPRITES);
+  Player::textures = Sprite::loadTextures(spriteImage, NUMBER_SPRITES);
   Player::current = Player::textures[0];
   UnloadImage(spriteImage);
 
@@ -27,7 +27,7 @@ Player::Player(int *sockfd, bool local)
   }
 }
 
-Player::~Player() { Sprite::unload_textures(Player::textures, NUMBER_SPRITES); }
+Player::~Player() { Sprite::unloadTextures(Player::textures, NUMBER_SPRITES); }
 
 void Player::updateSprite() {
   if (!Player::alive)

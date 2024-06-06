@@ -1,6 +1,6 @@
 #include "sprite.hpp"
 
-Texture2D *Sprite::load_textures(Image image, int n_sprites) {
+Texture2D *Sprite::loadTextures(Image image, int n_sprites) {
   Texture2D *textures = new Texture2D[n_sprites];
   float spriteWidth = image.width / n_sprites;
   float spriteHeight = image.height;
@@ -14,7 +14,7 @@ Texture2D *Sprite::load_textures(Image image, int n_sprites) {
   return textures;
 }
 
-void Sprite::unload_textures(Texture2D *textures, int n_sprites) {
+void Sprite::unloadTextures(Texture2D *textures, int n_sprites) {
   for (int i = 0; i < n_sprites; i++) {
     UnloadTexture(textures[i]);
   }

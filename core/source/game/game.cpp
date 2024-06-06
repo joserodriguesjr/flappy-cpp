@@ -43,7 +43,7 @@ void GameState::restartGame() {
 //   return result;
 // }
 
-void GameState::render_pause_screen() {
+void GameState::renderPauseScreen() {
   const char *text;
   if (GameState::online && !GameState::hosting)
     text = "Wait for host to start";
@@ -68,7 +68,7 @@ void GameState::render_pause_screen() {
   DrawText(text, x, y, fontSize, WHITE);
 }
 
-void GameState::render_buttons() {
+void GameState::renderButtons() {
   // Buttons
   DrawRectangle(5, GetScreenHeight() - 105, 245, 95, (Color){0, 0, 0, 100});
   DrawText("Spacebar - Jump", 10, GetScreenHeight() - 100, 20, WHITE);

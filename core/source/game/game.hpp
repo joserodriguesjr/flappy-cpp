@@ -61,6 +61,6 @@ public:
   void movement();
   void render();
 
-  void render_pause_screen();
-  void render_buttons();
+  void renderPauseScreen();
+  void renderButtons();
 };

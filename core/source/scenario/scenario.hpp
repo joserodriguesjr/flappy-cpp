@@ -30,5 +30,5 @@ public:
 
   void movement();
   void render();
-  void floor_render();
+  void renderFloor();
 };

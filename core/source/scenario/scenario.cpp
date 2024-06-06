@@ -78,7 +78,7 @@ void Scenario::render() {
       0.0f, 1.0f, WHITE);
 }
 
-void Scenario::floor_render() {
+void Scenario::renderFloor() {
   // Floor needs to be rendered after the pipe to crop the bottom texture
 
   DrawTextureEx(Scenario::floorTexture,
