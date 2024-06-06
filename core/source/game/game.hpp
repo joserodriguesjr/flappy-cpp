@@ -29,7 +29,6 @@ public:
   bool hosting;
   bool pause;
   bool started;
-  float gravity;
   float deltaTime;
 
   static GameState &instance();
@@ -57,9 +56,6 @@ public:
 
   int host(pthread_t *thread);
   int client(pthread_t *thread);
-
-  void update(float deltaTime);
-  void sounds(Sound deathSound, Sound backgroundMusic);
 
   void movement();
   void render();

@@ -59,7 +59,7 @@ void Player::movement() {
   }
 
   // TODO: Change to pubsub if have more objects
-  Player::velocity.y += gameState.gravity * gameState.deltaTime;
+  Player::velocity.y += GRAVITY * gameState.deltaTime;
   Player::position.y += Player::velocity.y * gameState.deltaTime;
 
   bool hit_floor = Player::position.y >= (GetScreenHeight() - FLOOR_HEIGHT);
@@ -115,6 +115,15 @@ void Player::render() {
                    Player::color);
     Player::spinDegree++;
   }
+}
+
+void Player::reset() {
+  Player::alive = true;
+  Player::position.y = PLAYER_START_POSITION_Y;
+  Player::velocity = (Vector2){0.0f, 0.0f};
+  Player::spinDegree = 0;
+  Player::tiltAngle = 0;
+  Player::color.a = 255;
 }
 
 void Player::player_jump(void *p) {

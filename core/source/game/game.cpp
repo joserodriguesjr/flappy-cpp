@@ -4,7 +4,7 @@
 GameState::GameState()
     : server(nullptr), scenario(nullptr), player(nullptr), score(nullptr),
       pipeManager(nullptr), online(false), hosting(false), pause(true),
-      started(false), gravity(GRAVITY), deltaTime(0) {}
+      started(false), deltaTime(0) {}
 
 GameState &GameState::instance() {
   static GameState INSTANCE;
@@ -14,18 +14,8 @@ GameState &GameState::instance() {
 #define PLAYER_START_POSITION_Y 400.0f
 
 void GameState::restartGame() {
-  // TODO: Criar metodos para reiniciar os objetos do player e cano
-  GameState::player->alive = true;
-  GameState::player->position.y = PLAYER_START_POSITION_Y;
-  GameState::player->velocity = (Vector2){0.0f, 0.0f};
-  GameState::player->spinDegree = 0;
-  GameState::player->tiltAngle = 0;
-  GameState::player->color.a = 255;
-
-  // onlinePlayer->position.y = PLAYER_START_POSITION_Y;
-  // onlinePlayer->velocity = (Vector2){0.0f, 0.0f};
-  // onlinePlayer->spinDegree = 0;
-  // onlinePlayer->tiltAngle = 0;
+  GameState::player->reset();
+  // GameState::onlinePlayer->reset();
 
   GameState::score->setValue(0);
   GameState::pause = true;
@@ -49,28 +39,6 @@ void GameState::restartGame() {
 //   int result = pthread_create(thread, NULL, wait_for_server, NULL);
 //   return result;
 // }
-
-void GameState::update(float deltaTime) { GameState::deltaTime = deltaTime; }
-
-void GameState::sounds(Sound deathSound, Sound backgroundMusic) {
-  // Background Music
-  {
-    if (!IsSoundPlaying(backgroundMusic)) {
-      SetSoundVolume(backgroundMusic, 0.05);
-      PlaySound(backgroundMusic);
-    }
-  }
-
-  // Death sound
-  bool visible = GameState::player->color.a != 0;
-  bool dead = !GameState::player->alive;
-  if (dead && visible) {
-    if (!IsSoundPlaying(deathSound)) {
-      SetSoundVolume(deathSound, 0.5);
-      PlaySound(deathSound);
-    }
-  }
-}
 
 void GameState::render_pause_screen() {
   const char *text;

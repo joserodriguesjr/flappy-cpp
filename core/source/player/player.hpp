@@ -8,18 +8,19 @@ const unsigned int PLAYER_JUMPSPEED = 500;
 
 class Player {
 private:
-public:
   Texture2D *textures;
-  Texture2D current;
-  Vector2 position;
   Vector2 velocity;
   float jumpSpeed;
   int spinDegree;
   float tiltAngle;
-  Color color;
-  bool alive;
   int *sockfd;
   bool local;
+
+public:
+  Texture2D current;
+  Vector2 position;
+  Color color;
+  bool alive;
 
   Player(int *sockfd, bool local);
   ~Player();
@@ -27,7 +28,9 @@ public:
   void updateSprite();
   void movement();
   void render();
+  void reset();
 
+  // TODO: FIX THIS
   static void player_jump(void *p);
   static void player_dead(Player *p);
 };
