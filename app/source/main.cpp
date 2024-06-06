@@ -25,13 +25,19 @@
 int main(int argc, char *argv[]) {
   // Choosing platform specific
   //--------------------------------------------------------------------------------------
-  Renderer *renderer;
-  Inputer *inputer;
+  Renderer *renderer = nullptr;
+  Inputer *inputer = nullptr;
+
 #ifdef DESKTOP
-  inputer = new RaylibInputer();
-  renderer = new RaylibRenderer();
+  RaylibRenderer raylibRenderer;
+  RaylibInputer raylibInputer;
+  renderer = &raylibRenderer;
+  inputer = &raylibInputer;
 #elif defined(ESP32)
-  renderer = new ESP32Renderer();
+  // ESP32Renderer esp32Renderer;
+  // ESP32Inputer esp32Inputer;
+  // renderer = &esp32Renderer;
+  // inputer = &esp32Inputer;
 #endif
   //--------------------------------------------------------------------------------------
 
@@ -174,7 +180,6 @@ int main(int argc, char *argv[]) {
   // CloseAudioDevice();
   renderer->Close();
 
-  delete renderer;
   //--------------------------------------------------------------------------------------
 
   return 0;
