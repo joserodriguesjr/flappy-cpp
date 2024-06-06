@@ -29,7 +29,7 @@ add_executable(Flappy
     # core/source/pubsub/pubsub.cpp
 )
 
-target_include_directories(Flappy PRIVATE include core/source platform)
+target_include_directories(Flappy PRIVATE include core core/source)
 
 # Platform-specific configurations
 if(PLATFORM STREQUAL "Desktop")

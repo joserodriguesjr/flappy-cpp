@@ -1,7 +1,7 @@
 #pragma once
 
+#include "interface/renderer.hpp"
 #include "raylib.h"
-#include "renderer.hpp"
 
 class RaylibRenderer : public Renderer {
 public:

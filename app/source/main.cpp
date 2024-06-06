@@ -1,12 +1,12 @@
 // #include <pthread.h>
 #include <raylib.h>
 
-#include "inputer.hpp"
-#include "renderer.hpp"
+#include "interface/inputer.hpp"
+#include "interface/renderer.hpp"
 
 #ifdef DESKTOP
-#include "raylib/rl_inputer.hpp"
-#include "raylib/rl_renderer.hpp"
+#include "platform/raylib/rl_inputer.hpp"
+#include "platform/raylib/rl_renderer.hpp"
 #elif defined(ESP32)
 #include "esp32/esp32_renderer.hpp"
 // Include others files

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "inputer.hpp"
+#include "interface/inputer.hpp"
 #include "raylib.h"
 #include <cstdio>
 
