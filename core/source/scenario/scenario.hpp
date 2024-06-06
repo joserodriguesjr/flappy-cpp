@@ -2,6 +2,8 @@
 
 #include "raylib.h"
 
+const float FLOOR_HEIGHT = 180;
+
 const float FLOOR_SCROLLSPEED = 300;
 const float BUSHES_SCROLLSPEED = 120;
 const float BUILDINGS_SCROLLSPEED = 60;
@@ -26,7 +28,7 @@ public:
   Scenario();
   ~Scenario();
 
-  void movement(void *g);
+  void movement();
   void render();
   void floor_render();
 };

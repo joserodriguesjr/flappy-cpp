@@ -1,6 +1,5 @@
 #pragma once
 
-#include "game/game.hpp"
 #include "raylib.h"
 
 const unsigned int MAX_PIPE_COUNT = 7;
@@ -15,27 +14,26 @@ typedef struct Pipe {
 
 class PipeManager {
 private:
-public:
-  Pipe pipes[MAX_PIPE_COUNT];
   Texture2D bottomPipeTexture;
   Texture2D topPipeTexture;
+  Pipe pipes[MAX_PIPE_COUNT];
   int offset;
   int gap;
-  int incGap;
-  int difMaxHeight;
-  int incDifMaxHeight;
+  // int incGap;
+  // int difMaxHeight;
+  // int incDifMaxHeight;
   int obstacleVelocity;
-  int incObstacleVelocity;
+  // int incObstacleVelocity;
+  void randomPipe(Pipe *pipe, int i);
+  bool pipeCollision(Pipe pipe);
 
+public:
   PipeManager();
   ~PipeManager();
 
-  void movement(void *gameState);
+  void movement();
   void render();
-
-  void _random_pipe(PipeManager *pipeManager, Pipe *pipe, int i);
-  bool _pipe_collision(GameState *gameState, PipeManager *pipeManager,
-                       Pipe pipe);
+  void fillPipes();
 };
 
 // TODO: Implementar parametros dentro do pipeManager

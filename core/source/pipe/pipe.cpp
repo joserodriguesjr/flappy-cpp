@@ -1,23 +1,19 @@
 #include "pipe.hpp"
-#include "constants.h"
+#include "game/game.hpp"
 #include <cstdio>
 
-PipeManager::PipeManager() : offset(300), gap(200), obstacleVelocity(250) {
+PipeManager::PipeManager()
+    : bottomPipeTexture(LoadTexture("resources/obstacles/bottomPipe.png")),
+      topPipeTexture(LoadTexture("resources/obstacles/topPipe.png")),
+      offset(300), gap(200), obstacleVelocity(250) {
 
-  PipeManager::bottomPipeTexture =
-      LoadTexture("resources/obstacles/bottomPipe.png");
-  PipeManager::topPipeTexture = LoadTexture("resources/obstacles/topPipe.png");
-
+  // TODO: difficulty
   // PipeManager::incGap = inc_gap;
   // PipeManager::difMaxHeight = dif_max_height;
   // PipeManager::incDifMaxHeight = inc_dif_max_height;
   // PipeManager::incObstacleVelocity = inc_obstacle_velocity;
 
-  for (int i = 0; i < MAX_PIPE_COUNT; i++) {
-    Pipe pipe;
-    _random_pipe(this, &pipe, i);
-    PipeManager::pipes[i] = pipe;
-  }
+  PipeManager::fillPipes();
 }
 
 PipeManager::~PipeManager() {
@@ -25,24 +21,16 @@ PipeManager::~PipeManager() {
   UnloadTexture(topPipeTexture);
 }
 
-void PipeManager::_random_pipe(PipeManager *pipeManager, Pipe *pipe, int i) {
-  float topPipeHeight = GetRandomValue(0, GetScreenHeight() / 2);
-  pipe->topPipeStart = (0 - GetScreenHeight()) + topPipeHeight;
-  pipe->bottomPipeStart = topPipeHeight + PipeManager::gap;
-  pipe->x = (GetScreenWidth() / 3 * 2) + (PipeManager::offset * i);
-  pipe->jumped = false;
-}
+void PipeManager::movement() {
+  GameState &gameState = GameState::instance();
 
-void PipeManager::movement(void *g) {
-  GameState *gameState = (GameState *)g;
-
-  if (!gameState->player->alive)
+  if (!gameState.getPlayer()->alive)
     return;
 
   for (int i = 0; i < MAX_PIPE_COUNT; i++) {
     // Atualizar posição dos tubos
     int newPosition = PipeManager::pipes[i].x -
-                      PipeManager::obstacleVelocity * gameState->deltaTime;
+                      PipeManager::obstacleVelocity * gameState.deltaTime;
 
     if (newPosition <= 0 && i != LAST_PIPE)
       PipeManager::pipes[i].x = 0;
@@ -60,7 +48,7 @@ void PipeManager::movement(void *g) {
       PipeManager::pipes[LAST_PIPE].topPipeStart =
           PipeManager::pipes[i].topPipeStart;
       PipeManager::pipes[LAST_PIPE].x = PipeManager::pipes[i].x;
-      _random_pipe(this, &PipeManager::pipes[i], 0);
+      randomPipe(&PipeManager::pipes[i], 0);
       PipeManager::pipes[i].x = GetScreenWidth() + (2 * PipeManager::offset);
     }
 
@@ -70,16 +58,15 @@ void PipeManager::movement(void *g) {
         PipeManager::pipes[i].x > (PLAYER_START_POSITION_X - 50);
     if (pipeCloseToPlayer) {
       // Verifica se acertou cano para cada cano perto do jogador
-      if (PipeManager::_pipe_collision(gameState, this,
-                                       PipeManager::pipes[i])) {
+      if (PipeManager::pipeCollision(PipeManager::pipes[i])) {
         // Publish(EVENT_COLLISION, PIPE, gameState);
-        Player::player_dead(gameState->player);
+        Player::player_dead(gameState.getPlayer());
       }
       // Se player passou pelo cano, ganha pontos
       if (PipeManager::pipes[i].x <= PLAYER_START_POSITION_X &&
           PipeManager::pipes[i].jumped == false) {
         PipeManager::pipes[i].jumped = true;
-        score_update(gameState->score);
+        gameState.getScore()->update();
       }
     }
   }
@@ -96,9 +83,24 @@ void PipeManager::render() {
   }
 }
 
-bool PipeManager::_pipe_collision(GameState *gameState,
-                                  PipeManager *pipeManager, Pipe pipe) {
-  Player *p = gameState->player;
+void PipeManager::fillPipes() {
+  for (int i = 0; i < MAX_PIPE_COUNT; i++) {
+    Pipe pipe;
+    randomPipe(&pipe, i);
+    PipeManager::pipes[i] = pipe;
+  }
+}
+
+void PipeManager::randomPipe(Pipe *pipe, int i) {
+  float topPipeHeight = GetRandomValue(0, GetScreenHeight() / 2);
+  pipe->topPipeStart = (0 - GetScreenHeight()) + topPipeHeight;
+  pipe->bottomPipeStart = topPipeHeight + PipeManager::gap;
+  pipe->x = (GetScreenWidth() / 3 * 2) + (PipeManager::offset * i);
+  pipe->jumped = false;
+}
+
+bool PipeManager::pipeCollision(Pipe pipe) {
+  Player *p = GameState::instance().getPlayer();
   // Menos 20%
   float playerWidth = p->current.width - (p->current.width / 10 * 2);
   float playerHeight = p->current.height - (p->current.height / 10 * 2);

@@ -1,42 +1,39 @@
 #include "game/game.hpp"
+#include "pipe/pipe.hpp"
 
-const unsigned int GRAVITY = 1400;
+GameState::GameState()
+    : server(nullptr), scenario(nullptr), player(nullptr), score(nullptr),
+      pipeManager(nullptr), online(false), hosting(false), pause(true),
+      started(false), gravity(GRAVITY), deltaTime(0) {}
 
-GameState::GameState(Server *svr, Scenario *scn, Player *p, Score *s)
-    : online(false), hosting(false), pause(true), started(false),
-      gravity(GRAVITY), deltaTime(0), server(svr), scenario(scn), player(p),
-      score(s) {}
+GameState &GameState::instance() {
+  static GameState INSTANCE;
+  return INSTANCE;
+}
 
-GameState::~GameState() {}
+#define PLAYER_START_POSITION_Y 400.0f
 
-// #define PLAYER_START_POSITION_X 300.0f
-// #define PLAYER_START_POSITION_Y 400.0f
+void GameState::restartGame() {
+  // TODO: Criar metodos para reiniciar os objetos do player e cano
+  GameState::player->alive = true;
+  GameState::player->position.y = PLAYER_START_POSITION_Y;
+  GameState::player->velocity = (Vector2){0.0f, 0.0f};
+  GameState::player->spinDegree = 0;
+  GameState::player->tiltAngle = 0;
+  GameState::player->color.a = 255;
 
-// void GameState::restartGame(PipeManager *pipeManager, Player *onlinePlayer) {
-//   // TODO: Criar metodos para reiniciar os objetos do player e cano
-//   GameState::player->alive = true;
-//   GameState::player->position.y = PLAYER_START_POSITION_Y;
-//   GameState::player->velocity = (Vector2){0.0f, 0.0f};
-//   GameState::player->spinDegree = 0;
-//   GameState::player->tiltAngle = 0;
-//   GameState::player->color.a = 255;
+  // onlinePlayer->position.y = PLAYER_START_POSITION_Y;
+  // onlinePlayer->velocity = (Vector2){0.0f, 0.0f};
+  // onlinePlayer->spinDegree = 0;
+  // onlinePlayer->tiltAngle = 0;
 
-//   onlinePlayer->position.y = PLAYER_START_POSITION_Y;
-//   onlinePlayer->velocity = (Vector2){0.0f, 0.0f};
-//   onlinePlayer->spinDegree = 0;
-//   onlinePlayer->tiltAngle = 0;
+  GameState::score->setValue(0);
+  GameState::pause = true;
+  GameState::started = false;
 
-//   GameState::score->value = 0;
-//   GameState::pause = true;
-//   GameState::started = false;
-
-//   // TODO: Send pipe info to client
-//   for (int i = 0; i < MAX_PIPE_COUNT; i++) {
-//     Pipe pipe;
-//     pipeManager->_random_pipe(pipeManager, &pipe, i);
-//     pipeManager->pipes[i] = pipe;
-//   }
-// }
+  // TODO: Send pipe info to client
+  pipeManager->fillPipes();
+}
 
 // int GameState::host(pthread_t *thread) {
 //   GameState::online = true;

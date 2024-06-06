@@ -1,5 +1,4 @@
-#ifndef NETWORK_H
-#define NETWORK_H
+#pragma once
 
 #include <arpa/inet.h>
 #include <pthread.h>
@@ -26,5 +25,3 @@ void *wait_for_client(void *arg);
 void *wait_for_server(void *arg);
 
 void handle_connection(int socket);
-
-#endif /* NETWORK_H */

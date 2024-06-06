@@ -1,5 +1,4 @@
-#ifndef PUBSUB_H
-#define PUBSUB_H
+#pragma once
 
 #define MAX_SUBSCRIBERS 10
 
@@ -35,5 +34,3 @@ void handle_in_network_messages(const char *eventData);
 void handle_out_network_messages(const char *eventData);
 void handle_key_pressed(const char *eventData);
 // void HandleMovement(const char *eventData, void *g, void *p)
-
-#endif // PUBSUB_H

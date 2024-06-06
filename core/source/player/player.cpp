@@ -1,32 +1,19 @@
 #include "player.hpp"
-#include "constants.h"
-#include "network/network.h"
-#include "pubsub/pubsub.h"
+#include "game/game.hpp"
+// #include "network/network.h"
+// #include "pubsub/pubsub.h"
 #include "sprite/sprite.hpp"
-#include <cstdio>
-
-const unsigned int NUMBER_SPRITES = 3;
-const unsigned int FRAMES_SPEED = 6;
-const unsigned int PLAYER_JUMPSPEED = 500;
-
-typedef struct GameState {
-  bool online;
-  bool hosting;
-  float gravity;
-  float deltaTime;
-  Server *server;
-  Player *player;
-} GameState;
 
 Player::Player(int *sockfd, bool local)
     : sockfd(sockfd), local(local), velocity({0, 0}),
       jumpSpeed(PLAYER_JUMPSPEED), alive(true), spinDegree(0), tiltAngle(0) {
 
-  Player::spriteImage = LoadImage("resources/flappy/flappy_mov_red_big.png");
-  Player::textures = Sprite::load_textures(Player::spriteImage, NUMBER_SPRITES);
+  Image spriteImage = LoadImage("resources/flappy/flappy_mov_red_big.png");
+  Player::textures = Sprite::load_textures(spriteImage, NUMBER_SPRITES);
   Player::current = Player::textures[0];
-  Color color = WHITE;
+  UnloadImage(spriteImage);
 
+  Color color = WHITE;
   if (!local) {
     Player::position =
         (Vector2){PLAYER_START_POSITION_X - 50, PLAYER_START_POSITION_Y};
@@ -39,31 +26,30 @@ Player::Player(int *sockfd, bool local)
   }
 }
 
-Player::~Player() {
-  UnloadImage(Player::spriteImage);
-  Sprite::unload_textures(Player::textures, NUMBER_SPRITES);
-}
+Player::~Player() { Sprite::unload_textures(Player::textures, NUMBER_SPRITES); }
 
-void Player::updateSprite(int *framesCounter, int *currentFrame) {
+void Player::updateSprite() {
   if (!Player::alive)
     return;
 
-  (*framesCounter)++;
-  if (*framesCounter >= (60 / FRAMES_SPEED)) {
-    *framesCounter = 0;
-    (*currentFrame)++;
-    if (*currentFrame > 2)
-      *currentFrame = 0;
+  static int framesCounter, currentFrame;
 
-    Player::current = Player::textures[*currentFrame];
+  framesCounter++;
+  if (framesCounter >= (60 / FRAMES_SPEED)) {
+    framesCounter = 0;
+    (currentFrame)++;
+    if (currentFrame > 2)
+      currentFrame = 0;
+
+    Player::current = Player::textures[currentFrame];
   }
 }
 
-void Player::movement(void *g) {
+void Player::movement() {
   if (!Player::alive)
     return;
 
-  GameState *gameState = (GameState *)g;
+  GameState &gameState = GameState::instance();
 
   if (IsKeyPressed(KEY_SPACE)) {
     Player::velocity.y = -Player::jumpSpeed;
@@ -73,8 +59,8 @@ void Player::movement(void *g) {
   }
 
   // TODO: Change to pubsub if have more objects
-  Player::velocity.y += gameState->gravity * gameState->deltaTime;
-  Player::position.y += Player::velocity.y * gameState->deltaTime;
+  Player::velocity.y += gameState.gravity * gameState.deltaTime;
+  Player::position.y += Player::velocity.y * gameState.deltaTime;
 
   bool hit_floor = Player::position.y >= (GetScreenHeight() - FLOOR_HEIGHT);
   if (hit_floor)
@@ -83,7 +69,9 @@ void Player::movement(void *g) {
 }
 
 // TODO: Just fall, no spinning
-void Player::animation(Player *p, float deltaTime) {
+void Player::render() {
+  float deltaTime = GameState::instance().deltaTime;
+
   if (Player::alive) {
     float tiltAngle = Player::velocity.y * 8 * deltaTime;
     Rectangle source = {0, 0, static_cast<float>(Player::current.width),

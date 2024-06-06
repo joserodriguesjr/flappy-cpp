@@ -1,7 +1,6 @@
 #pragma once
 
 #include "raylib.h"
-#include <stdlib.h>
 
 class Sprite {
 public:

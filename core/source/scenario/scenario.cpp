@@ -1,38 +1,15 @@
 #include "scenario.hpp"
 #include "game/game.hpp"
-#include "raylib.h"
-
-// Scenario::Scenario() {
-//   Scenario::floorTexture =
-//   LoadTexture("resources/scenario/floor_complete.png");
-//   Scenario::floorScrollSpeed = FLOOR_SCROLLSPEED;
-//   Scenario::floorScrollOffset = 0.0f;
-
-//   Scenario::bushesTexture = LoadTexture("resources/scenario/bushes.png");
-//   Scenario::bushesScrollSpeed = BUSHES_SCROLLSPEED;
-//   Scenario::bushesScrollOffset = 0.0f;
-
-//   Scenario::buildingsTexture =
-//   LoadTexture("resources/scenario/buildings.png");
-//   Scenario::buildingsScrollSpeed = BUILDINGS_SCROLLSPEED;
-//   Scenario::buildingsScrollOffset = 0.0f;
-
-//   Scenario::cloudsTexture = LoadTexture("resources/scenario/clouds.png");
-//   Scenario::cloudsScrollSpeed = CLOUDS_SCROLLSPEED;
-//   Scenario::cloudsScrollOffset = 0.0f;
-// }
 
 Scenario::Scenario()
-    : floorScrollSpeed(FLOOR_SCROLLSPEED), floorScrollOffset(0.0f),
+    : floorTexture(LoadTexture("resources/scenario/floor_complete.png")),
+      floorScrollSpeed(FLOOR_SCROLLSPEED), floorScrollOffset(0.0f),
+      bushesTexture(LoadTexture("resources/scenario/bushes.png")),
       bushesScrollSpeed(BUSHES_SCROLLSPEED), bushesScrollOffset(0.0f),
+      buildingsTexture(LoadTexture("resources/scenario/buildings.png")),
       buildingsScrollSpeed(BUILDINGS_SCROLLSPEED), buildingsScrollOffset(0.0f),
-      cloudsScrollSpeed(CLOUDS_SCROLLSPEED), cloudsScrollOffset(0.0f) {
-
-  floorTexture = LoadTexture("resources/scenario/floor_complete.png");
-  bushesTexture = LoadTexture("resources/scenario/bushes.png");
-  buildingsTexture = LoadTexture("resources/scenario/buildings.png");
-  cloudsTexture = LoadTexture("resources/scenario/clouds.png");
-}
+      cloudsTexture(LoadTexture("resources/scenario/clouds.png")),
+      cloudsScrollSpeed(CLOUDS_SCROLLSPEED), cloudsScrollOffset(0.0f) {}
 
 Scenario::~Scenario() {
   UnloadTexture(floorTexture);
@@ -41,29 +18,29 @@ Scenario::~Scenario() {
   UnloadTexture(cloudsTexture);
 }
 
-void Scenario::movement(void *g) {
-  GameState *game = (GameState *)g;
+void Scenario::movement() {
+  GameState &game = GameState::instance();
 
-  if (!game->player->alive)
+  if (!game.getPlayer()->alive)
     return;
 
   // If the offset is greater than the texture width, reset it to create a
   // looping effect
 
-  Scenario::floorScrollOffset += Scenario::floorScrollSpeed * game->deltaTime;
+  Scenario::floorScrollOffset += Scenario::floorScrollSpeed * game.deltaTime;
   if (Scenario::floorScrollOffset >= Scenario::floorTexture.width)
     Scenario::floorScrollOffset = 0.0f;
 
-  Scenario::bushesScrollOffset += Scenario::bushesScrollSpeed * game->deltaTime;
+  Scenario::bushesScrollOffset += Scenario::bushesScrollSpeed * game.deltaTime;
   if (Scenario::bushesScrollOffset >= Scenario::bushesTexture.width)
     Scenario::bushesScrollOffset = 0.0f;
 
   Scenario::buildingsScrollOffset +=
-      Scenario::buildingsScrollSpeed * game->deltaTime;
+      Scenario::buildingsScrollSpeed * game.deltaTime;
   if (Scenario::buildingsScrollOffset >= Scenario::buildingsTexture.width)
     Scenario::buildingsScrollOffset = 0.0f;
 
-  Scenario::cloudsScrollOffset += Scenario::cloudsScrollSpeed * game->deltaTime;
+  Scenario::cloudsScrollOffset += Scenario::cloudsScrollSpeed * game.deltaTime;
   if (Scenario::cloudsScrollOffset >= Scenario::cloudsTexture.width)
     Scenario::cloudsScrollOffset = 0.0f;
 }
