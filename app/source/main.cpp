@@ -1,6 +1,16 @@
-#include <pthread.h>
+// #include <pthread.h>
+#include <raylib.h>
 
-#include "raylib.h"
+#include "inputer.hpp"
+#include "renderer.hpp"
+
+#ifdef DESKTOP
+#include "raylib/rl_inputer.hpp"
+#include "raylib/rl_renderer.hpp"
+#elif defined(ESP32)
+#include "esp32/esp32_renderer.hpp"
+// Include others files
+#endif
 
 #include "game/game.hpp"
 
@@ -9,14 +19,26 @@
 #include "player/player.hpp"
 #include "scenario/scenario.hpp"
 #include "score/score.hpp"
-#include "sound/sound.hpp"
+// #include "sound/sound.hpp"
 // #include "pubsub/pubsub.h"
 
 int main(int argc, char *argv[]) {
+  // Choosing platform specific
+  //--------------------------------------------------------------------------------------
+  Renderer *renderer;
+  Inputer *inputer;
+#ifdef DESKTOP
+  inputer = new RaylibInputer();
+  renderer = new RaylibRenderer();
+#elif defined(ESP32)
+  renderer = new ESP32Renderer();
+#endif
+  //--------------------------------------------------------------------------------------
+
   // Initialization
   //--------------------------------------------------------------------------------------
-  InitWindow(1200, 800, "Flappy");
-  InitAudioDevice();
+  renderer->Init(1200, 800);
+  // InitAudioDevice();
 
   // TODO: receive external configuration
   Server server;
@@ -24,7 +46,7 @@ int main(int argc, char *argv[]) {
   Player player(&server.serverSocket, true);
   Score score;
   PipeManager pipeManager;
-  SoundManager soundManager;
+  // SoundManager soundManager;
   // Player onlinePlayer(&server.serverSocket, false);
 
   GameState &game = GameState::instance();
@@ -33,7 +55,7 @@ int main(int argc, char *argv[]) {
   game.setPlayer(&player);
   game.setScore(&score);
   game.setPipeManager(&pipeManager); // TODO: refactor to objectManager
-  game.setSoundManager(&soundManager);
+  // game.setSoundManager(&soundManager);
 
   // Subscribe(EVENT_IN_NETWORK_MESSAGE, &handle_in_network_messages);
   // Subscribe(EVENT_OUT_NETWORK_MESSAGE, &handle_out_network_messages);
@@ -46,7 +68,7 @@ int main(int argc, char *argv[]) {
   SetTargetFPS(120);
   //--------------------------------------------------------------------------------------
   // Detect window close button or ESC key
-  while (!WindowShouldClose()) {
+  while (!inputer->IsPressed(QUIT)) {
     // Host game when 'H' is pressed
     //----------------------------------------------------------------------------------
     // if (IsKeyPressed(KEY_H)) {
@@ -74,7 +96,7 @@ int main(int argc, char *argv[]) {
 
     // Restart when 'R' is pressed (If online, only host can restart)
     //----------------------------------------------------------------------------------
-    if (IsKeyPressed(KEY_R) && (!game.online || game.hosting)) {
+    if (inputer->IsPressed(RESTART) && (!game.online || game.hosting)) {
       // if (game.hosting)
       //   Publish(EVENT_OUT_NETWORK_MESSAGE, NM_GAME_RESTART);
       game.restartGame();
@@ -83,7 +105,7 @@ int main(int argc, char *argv[]) {
 
     // Wait for player to start the game (If online, only host can start)
     //----------------------------------------------------------------------------------
-    if (IsKeyPressed(KEY_SPACE) && !game.started &&
+    if (inputer->IsPressed(JUMP) && !game.started &&
         (!game.online || game.hosting)) {
       // if (game.hosting)
       // Publish(EVENT_OUT_NETWORK_MESSAGE, NM_GAME_START);
@@ -100,7 +122,7 @@ int main(int argc, char *argv[]) {
     if (!game.pause) {
       // Sounds
       //----------------------------------------------------------------------------------
-      game.getSoundManager()->play();
+      // game.getSoundManager()->play();
       //----------------------------------------------------------------------------------
 
       // Update texture frame
@@ -125,8 +147,7 @@ int main(int argc, char *argv[]) {
 
     // Draw textures
     //----------------------------------------------------------------------------------
-    BeginDrawing();
-    ClearBackground(WHITE);
+    renderer->Clear();
 
     scenario.render();
     pipeManager.render();
@@ -139,7 +160,7 @@ int main(int argc, char *argv[]) {
     if (game.pause)
       game.render_pause_screen();
 
-    EndDrawing();
+    renderer->Draw();
     //----------------------------------------------------------------------------------
   }
   //----------------------------------------------------------------------------------
@@ -150,8 +171,10 @@ int main(int argc, char *argv[]) {
 
   // todo: delete in NEW
 
-  CloseAudioDevice();
-  CloseWindow();
+  // CloseAudioDevice();
+  renderer->Close();
+
+  delete renderer;
   //--------------------------------------------------------------------------------------
 
   return 0;

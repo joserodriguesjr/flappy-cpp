@@ -4,13 +4,13 @@ clean:
 	rm -rf build/
 
 build-debug:
-	cmake -DCMAKE_BUILD_TYPE=Debug -S . -B build && cmake --build build
+	cmake -DPLATFORM=Desktop -DCMAKE_BUILD_TYPE=Debug -S . -B build && cmake --build build
 
 build-release:
-	cmake -DCMAKE_BUILD_TYPE=Release -S . -B build && cmake --build build
+	cmake -DPLATFORM=Desktop -DCMAKE_BUILD_TYPE=Release -S . -B build && cmake --build build
 
 run:
-	./build/app
+	./build/Flappy
 
 test_core: # add -s to see successfull tests
 	./build/core_tests

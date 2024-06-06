@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project(flappy VERSION 0.1.0 LANGUAGES CXX)
+project(Flappy VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 11)
@@ -16,15 +16,7 @@ else()
     message( FATAL_ERROR "Specify a build type" )
 endif()
 
-# Packages
-include(_cmake/CPM.cmake)
-CPMAddPackage("gh:raysan5/raylib#5.0")
-
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
-
-# App
-add_executable(app 
+add_executable(Flappy 
     app/source/main.cpp
     core/source/scenario/scenario.cpp
     core/source/game/game.cpp
@@ -37,5 +29,23 @@ add_executable(app
     # core/source/pubsub/pubsub.cpp
 )
 
-target_include_directories(app PRIVATE core/source)
-target_link_libraries(app PRIVATE raylib Threads::Threads)
+target_include_directories(Flappy PRIVATE include core/source platform)
+
+# Platform-specific configurations
+if(PLATFORM STREQUAL "Desktop")
+    add_definitions(-DDESKTOP)
+
+    include(_cmake/CPM.cmake)
+    CPMAddPackage("gh:raysan5/raylib#5.0")
+
+    # set(THREADS_PREFER_PTHREAD_FLAG ON)
+    # find_package(Threads REQUIRED)
+    # target_link_libraries(Flappy PRIVATE raylib Threads::Threads)
+
+    target_link_libraries(Flappy PRIVATE raylib)
+elseif(PLATFORM STREQUAL "ESP32")
+    add_definitions(-DESP32)
+    # Add ESP32 specific configurations
+    # include_directories(${ESP32_INCLUDE_DIR})
+    # target_link_libraries(FlappyTemplate ${ESP32_LIBRARIES})
+endif()
