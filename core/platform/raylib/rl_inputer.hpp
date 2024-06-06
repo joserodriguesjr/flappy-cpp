@@ -2,10 +2,20 @@
 
 #include "interface/inputer.hpp"
 #include "raylib.h"
-#include <cstdio>
 
 class RaylibInputer : public Inputer {
+private:
+  RaylibInputer() = default;
+  ~RaylibInputer() = default;
+  RaylibInputer(const RaylibInputer &) = delete;
+  RaylibInputer &operator=(const RaylibInputer &) = delete;
+
 public:
+  static RaylibInputer &instance() {
+    static RaylibInputer instance;
+    return instance;
+  }
+
   bool IsPressed(int key) override {
     if (key == RESTART)
       return IsKeyPressed(KEY_R);

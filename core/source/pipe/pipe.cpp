@@ -3,10 +3,10 @@
 #include "player/player.hpp"
 #include "score/score.hpp"
 
-PipeManager::PipeManager()
-    : bottomPipeTexture(LoadTexture("resources/obstacles/bottomPipe.png")),
-      topPipeTexture(LoadTexture("resources/obstacles/topPipe.png")),
-      offset(300), gap(200), obstacleVelocity(250) {
+PipeManager::PipeManager(PipeManagerConfig pmCfg)
+    : bottomPipeTexture(renderer.LoadTexture2D(pmCfg.bottomPipePath)),
+      topPipeTexture(renderer.LoadTexture2D(pmCfg.topPipePath)), offset(300),
+      gap(200), obstacleVelocity(250) {
 
   // TODO: difficulty
   // PipeManager::incGap = inc_gap;
@@ -18,8 +18,8 @@ PipeManager::PipeManager()
 }
 
 PipeManager::~PipeManager() {
-  UnloadTexture(bottomPipeTexture);
-  UnloadTexture(topPipeTexture);
+  renderer.UnloadTexture2D(bottomPipeTexture);
+  renderer.UnloadTexture2D(topPipeTexture);
 }
 
 void PipeManager::movement() {

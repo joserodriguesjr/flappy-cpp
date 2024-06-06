@@ -2,6 +2,8 @@
 
 class Inputer {
 public:
+  static Inputer &instance();
+
   virtual bool IsPressed(int action) = 0;
   virtual ~Inputer() = default;
 };

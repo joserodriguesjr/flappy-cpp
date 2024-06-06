@@ -1,9 +1,14 @@
 #pragma once
 
-#include "raylib.h"
+#include "interface/renderer.hpp"
 
 const unsigned int MAX_PIPE_COUNT = 7;
 const unsigned int LAST_PIPE = MAX_PIPE_COUNT - 1;
+
+struct PipeManagerConfig {
+  const char *bottomPipePath;
+  const char *topPipePath;
+};
 
 typedef struct Pipe {
   float topPipeStart;
@@ -15,6 +20,7 @@ typedef struct Pipe {
 
 class PipeManager {
 private:
+  Renderer &renderer = Renderer::instance();
   Texture2D bottomPipeTexture;
   Texture2D topPipeTexture;
   Pipe pipes[MAX_PIPE_COUNT];
@@ -29,7 +35,7 @@ private:
   bool pipeCollision(Pipe pipe);
 
 public:
-  PipeManager();
+  PipeManager(PipeManagerConfig pmCfg);
   ~PipeManager();
 
   void movement();

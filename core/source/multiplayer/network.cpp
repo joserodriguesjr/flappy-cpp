@@ -1,6 +1,6 @@
 #include "network.h"
 #include "player/player.hpp"
-#include "pubsub/pubsub.h"
+#include "pubsub.h"
 #include <cstdio>
 #include <cstring>
 

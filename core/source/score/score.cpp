@@ -1,7 +1,6 @@
 #include "score.hpp"
 
-Score::Score()
-    : value(0), position({10, 10}), font(GetFontDefault()), color(WHITE) {
+Score::Score() : value(0), position({10, 10}), font(Font{0}), color(WHITE) {
   Score::backgroundColor = GREEN;
   Score::backgroundColor.a = 100;
 }

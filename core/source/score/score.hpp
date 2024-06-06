@@ -1,6 +1,6 @@
 #pragma once
 
-#include "raylib.h"
+#include "interface/renderer.hpp"
 
 const unsigned int SCORE_VALUE = 50;
 

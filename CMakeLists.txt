@@ -18,6 +18,10 @@ endif()
 
 add_executable(Flappy 
     app/source/main.cpp
+
+    core/interface/renderer.cpp
+    core/interface/inputer.cpp
+    
     core/source/scenario/scenario.cpp
     core/source/game/game.cpp
     core/source/pipe/pipe.cpp
@@ -29,7 +33,7 @@ add_executable(Flappy
     # core/source/pubsub/pubsub.cpp
 )
 
-target_include_directories(Flappy PRIVATE include core core/source)
+target_include_directories(Flappy PRIVATE app core core/source)
 
 # Platform-specific configurations
 if(PLATFORM STREQUAL "Desktop")

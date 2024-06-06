@@ -5,11 +5,11 @@
 // #include "network/network.h"
 // #include "pubsub/pubsub.h"
 
-Player::Player(int *sockfd, bool local)
+Player::Player(const char *spritePath, int *sockfd, bool local)
     : sockfd(sockfd), local(local), velocity({0, 0}),
       jumpSpeed(PLAYER_JUMPSPEED), alive(true), spinDegree(0), tiltAngle(0) {
 
-  Image spriteImage = LoadImage("resources/flappy/flappy_mov_red_big.png");
+  Image spriteImage = renderer.LoadNewImage(spritePath);
   Player::textures = Sprite::loadTextures(spriteImage, NUMBER_SPRITES);
   Player::current = Player::textures[0];
   UnloadImage(spriteImage);
@@ -30,9 +30,6 @@ Player::Player(int *sockfd, bool local)
 Player::~Player() { Sprite::unloadTextures(Player::textures, NUMBER_SPRITES); }
 
 void Player::updateSprite() {
-  if (!Player::alive)
-    return;
-
   static int framesCounter, currentFrame;
 
   framesCounter++;
@@ -47,9 +44,6 @@ void Player::updateSprite() {
 }
 
 void Player::movement() {
-  if (!Player::alive)
-    return;
-
   GameState &gameState = GameState::instance();
 
   if (IsKeyPressed(KEY_SPACE)) {
@@ -71,10 +65,8 @@ void Player::movement() {
 
 // TODO: Just fall, no spinning
 void Player::render() {
-  float deltaTime = GameState::instance().deltaTime;
-
   if (Player::alive) {
-    float tiltAngle = Player::velocity.y * 8 * deltaTime;
+    float tiltAngle = Player::velocity.y * 0.07;
     Rectangle source = {0, 0, static_cast<float>(Player::current.width),
                         static_cast<float>(Player::current.height)};
     Rectangle dest = {Player::position.x, Player::position.y,

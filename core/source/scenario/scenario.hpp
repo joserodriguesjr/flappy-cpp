@@ -1,6 +1,6 @@
 #pragma once
 
-#include "raylib.h"
+#include "interface/renderer.hpp"
 
 const float FLOOR_HEIGHT = 180;
 
@@ -9,8 +9,16 @@ const float BUSHES_SCROLLSPEED = 120;
 const float BUILDINGS_SCROLLSPEED = 60;
 const float CLOUDS_SCROLLSPEED = 30;
 
+struct ScenarioConfig {
+  const char *floorPath;
+  const char *bushesPath;
+  const char *buildingsPath;
+  const char *cloudsPath;
+};
+
 class Scenario {
 private:
+  Renderer &renderer = Renderer::instance();
   Texture2D floorTexture;
   float floorScrollSpeed;
   float floorScrollOffset;
@@ -25,7 +33,7 @@ private:
   float cloudsScrollOffset;
 
 public:
-  Scenario();
+  Scenario(ScenarioConfig scnCfg);
   ~Scenario();
 
   void movement();

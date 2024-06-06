@@ -1,21 +1,21 @@
 #include "scenario.hpp"
 #include "game/game.hpp"
 
-Scenario::Scenario()
-    : floorTexture(LoadTexture("resources/scenario/floor_complete.png")),
+Scenario::Scenario(ScenarioConfig scnCfg)
+    : floorTexture(renderer.LoadTexture2D(scnCfg.floorPath)),
       floorScrollSpeed(FLOOR_SCROLLSPEED), floorScrollOffset(0.0f),
-      bushesTexture(LoadTexture("resources/scenario/bushes.png")),
+      bushesTexture(renderer.LoadTexture2D(scnCfg.bushesPath)),
       bushesScrollSpeed(BUSHES_SCROLLSPEED), bushesScrollOffset(0.0f),
-      buildingsTexture(LoadTexture("resources/scenario/buildings.png")),
+      buildingsTexture(renderer.LoadTexture2D(scnCfg.buildingsPath)),
       buildingsScrollSpeed(BUILDINGS_SCROLLSPEED), buildingsScrollOffset(0.0f),
-      cloudsTexture(LoadTexture("resources/scenario/clouds.png")),
+      cloudsTexture(renderer.LoadTexture2D(scnCfg.cloudsPath)),
       cloudsScrollSpeed(CLOUDS_SCROLLSPEED), cloudsScrollOffset(0.0f) {}
 
 Scenario::~Scenario() {
-  UnloadTexture(floorTexture);
-  UnloadTexture(bushesTexture);
-  UnloadTexture(buildingsTexture);
-  UnloadTexture(cloudsTexture);
+  Scenario::renderer.UnloadTexture2D(floorTexture);
+  Scenario::renderer.UnloadTexture2D(bushesTexture);
+  Scenario::renderer.UnloadTexture2D(buildingsTexture);
+  Scenario::renderer.UnloadTexture2D(cloudsTexture);
 }
 
 void Scenario::movement() {

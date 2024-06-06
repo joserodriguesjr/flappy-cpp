@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "globals.h"
-#include "network/network.h"
+#include "network.h"
 #include "player/player.hpp"
 #include "pubsub.h"
 

@@ -1,80 +1,64 @@
 // #include <pthread.h>
-#include <raylib.h>
-
-#include "interface/inputer.hpp"
-#include "interface/renderer.hpp"
-
-#ifdef DESKTOP
-#include "platform/raylib/rl_inputer.hpp"
-#include "platform/raylib/rl_renderer.hpp"
-#elif defined(ESP32)
-#include "esp32/esp32_renderer.hpp"
-// Include others files
-#endif
 
 #include "game/game.hpp"
-
-#include "network/network.h"
+#include "interface/inputer.hpp"
+#include "interface/renderer.hpp"
+// #include "multiplayer/multiplayer.h"
 #include "pipe/pipe.hpp"
 #include "player/player.hpp"
 #include "scenario/scenario.hpp"
 #include "score/score.hpp"
 // #include "sound/sound.hpp"
-// #include "pubsub/pubsub.h"
 
 int main(int argc, char *argv[]) {
-  // Choosing platform specific
-  //--------------------------------------------------------------------------------------
-  Renderer *renderer = nullptr;
-  Inputer *inputer = nullptr;
+  Renderer &renderer = Renderer::instance();
+  Inputer &inputer = Inputer::instance();
 
 #ifdef DESKTOP
-  RaylibRenderer raylibRenderer;
-  RaylibInputer raylibInputer;
-  renderer = &raylibRenderer;
-  inputer = &raylibInputer;
+  ScenarioConfig scnCfg = {.floorPath = "resources/scenario/floor_complete.png",
+                           .bushesPath = "resources/scenario/bushes.png",
+                           .buildingsPath = "resources/scenario/buildings.png",
+                           .cloudsPath = "resources/scenario/clouds.png"};
+
+  const char *spritePath = "resources/flappy/flappy_mov_red_big.png";
+
+  PipeManagerConfig pmCfg = {.bottomPipePath =
+                                 "resources/obstacles/bottomPipe.png",
+                             .topPipePath = "resources/obstacles/topPipe.png"};
+
 #elif defined(ESP32)
-  // ESP32Renderer esp32Renderer;
-  // ESP32Inputer esp32Inputer;
-  // renderer = &esp32Renderer;
-  // inputer = &esp32Inputer;
+// resources configuration
 #endif
-  //--------------------------------------------------------------------------------------
 
-  // Initialization
-  //--------------------------------------------------------------------------------------
-  renderer->Init(1200, 800);
-  // InitAudioDevice();
+  renderer.Init(1200, 800);
 
-  // TODO: receive external configuration
-  Server server;
-  Scenario scenario;
-  Player player(&server.serverSocket, true);
+  // Server server;
+  Scenario scenario(scnCfg);
+  Player player(spritePath, nullptr, true);
+  // Player onlinePlayer(spritePath, &server.serverSocket, false);
   Score score;
-  PipeManager pipeManager;
+  PipeManager pipeManager(pmCfg);
   // SoundManager soundManager;
-  // Player onlinePlayer(&server.serverSocket, false);
 
   GameState &game = GameState::instance();
-  game.setServer(&server);
+  // game.setServer(&server);
   game.setScenario(&scenario);
   game.setPlayer(&player);
   game.setScore(&score);
-  game.setPipeManager(&pipeManager); // TODO: refactor to objectManager
+  game.setPipeManager(&pipeManager);
   // game.setSoundManager(&soundManager);
 
   // Subscribe(EVENT_IN_NETWORK_MESSAGE, &handle_in_network_messages);
   // Subscribe(EVENT_OUT_NETWORK_MESSAGE, &handle_out_network_messages);
   // Subscribe(EVENT_KEY_PRESSED, &handle_key_pressed);
 
-  pthread_t thread;
-  //--------------------------------------------------------------------------------------
+  // pthread_t thread;
 
-  // Main game loop
-  SetTargetFPS(120);
-  //--------------------------------------------------------------------------------------
+  renderer.SetFPS(60);
   // Detect window close button or ESC key
-  while (!inputer->IsPressed(QUIT)) {
+  //--------------------------------------------------------------------------------------
+  while (!inputer.IsPressed(QUIT)) {
+
     // Host game when 'H' is pressed
     //----------------------------------------------------------------------------------
     // if (IsKeyPressed(KEY_H)) {
@@ -102,7 +86,7 @@ int main(int argc, char *argv[]) {
 
     // Restart when 'R' is pressed (If online, only host can restart)
     //----------------------------------------------------------------------------------
-    if (inputer->IsPressed(RESTART) && (!game.online || game.hosting)) {
+    if (inputer.IsPressed(RESTART) && (!game.online || game.hosting)) {
       // if (game.hosting)
       //   Publish(EVENT_OUT_NETWORK_MESSAGE, NM_GAME_RESTART);
       game.restartGame();
@@ -111,7 +95,7 @@ int main(int argc, char *argv[]) {
 
     // Wait for player to start the game (If online, only host can start)
     //----------------------------------------------------------------------------------
-    if (inputer->IsPressed(JUMP) && !game.started &&
+    if (inputer.IsPressed(JUMP) && !game.started &&
         (!game.online || game.hosting)) {
       // if (game.hosting)
       // Publish(EVENT_OUT_NETWORK_MESSAGE, NM_GAME_START);
@@ -120,40 +104,29 @@ int main(int argc, char *argv[]) {
     }
     //----------------------------------------------------------------------------------
 
-    // States
+    // Movement logic
     //----------------------------------------------------------------------------------
-    game.deltaTime = GetFrameTime();
-    //----------------------------------------------------------------------------------
-
     if (!game.pause) {
-      // Sounds
-      //----------------------------------------------------------------------------------
-      // game.getSoundManager()->play();
-      //----------------------------------------------------------------------------------
+      // soundManager.play();
 
-      // Update texture frame
-      //----------------------------------------------------------------------------------
-      player.updateSprite();
-      // if (game.online)
-      // onlinePlayer.updateSprite();
-      //----------------------------------------------------------------------------------
-
-      // Update positions
-      //----------------------------------------------------------------------------------
       if (player.alive) {
-        game.getScenario()->movement();
-        game.getPipeManager()->movement();
-        game.getPlayer()->movement();
+        game.deltaTime = renderer.GetDeltaTime();
+        player.updateSprite();
+        player.movement();
+        pipeManager.movement();
+        scenario.movement();
       }
-      // if (game.online)
+
+      // if (game.online) {
+      //   onlinePlayer.updateSprite();
       //   onlinePlayer.movement();
-      // Publish(EVENT_MOVEMENT, GRAVITY, &game);
-      //----------------------------------------------------------------------------------
+      // }
     }
+    //----------------------------------------------------------------------------------
 
     // Draw textures
     //----------------------------------------------------------------------------------
-    renderer->Clear();
+    renderer.Clear();
 
     scenario.render();
     pipeManager.render();
@@ -166,21 +139,11 @@ int main(int argc, char *argv[]) {
     if (game.pause)
       game.renderPauseScreen();
 
-    renderer->Draw();
+    renderer.Draw();
     //----------------------------------------------------------------------------------
   }
-  //----------------------------------------------------------------------------------
-
-  // De-Initialization
-  //--------------------------------------------------------------------------------------
   // close_server();
-
-  // todo: delete in NEW
-
-  // CloseAudioDevice();
-  renderer->Close();
-
-  //--------------------------------------------------------------------------------------
+  renderer.Close();
 
   return 0;
 }

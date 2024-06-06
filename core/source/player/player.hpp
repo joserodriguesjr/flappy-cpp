@@ -1,6 +1,6 @@
 #pragma once
 
-#include "raylib.h"
+#include "interface/renderer.hpp"
 
 const unsigned int NUMBER_SPRITES = 3;
 const unsigned int FRAMES_SPEED = 6;
@@ -8,6 +8,7 @@ const unsigned int PLAYER_JUMPSPEED = 500;
 
 class Player {
 private:
+  Renderer &renderer = Renderer::instance();
   Texture2D *textures;
   Vector2 velocity;
   float jumpSpeed;
@@ -22,7 +23,7 @@ public:
   Vector2 position;
   bool alive;
 
-  Player(int *sockfd, bool local);
+  Player(const char *spritePath, int *sockfd, bool local);
   ~Player();
 
   void updateSprite();
