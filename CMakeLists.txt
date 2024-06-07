@@ -40,34 +40,34 @@ if(PLATFORM STREQUAL "Desktop")
     CPMAddPackage("gh:raysan5/raylib#5.0")
 
     add_library(core STATIC
-    core/scenario/scenario.cpp
-    core/game/game.cpp
-    core/pipe/pipe.cpp
-    core/player/player.cpp
-    core/score/score.cpp
-    core/sprite/sprite.cpp)
+        core/scenario/scenario.cpp
+        core/game/game.cpp
+        core/pipe/pipe.cpp
+        core/player/player.cpp
+        core/score/score.cpp
+        core/sprite/sprite.cpp)
     
     add_executable(flappy 
         main/main.cpp
-        platform/interface/renderer.cpp
-        platform/interface/inputer.cpp)
+        core/interface/renderer.cpp
+        core/interface/inputer.cpp)
 
     target_link_libraries(flappy PRIVATE core raylib)
     target_compile_options(flappy PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
 elseif(PLATFORM STREQUAL "Esp32")
     add_library(core STATIC
-    core/scenario/scenario.cpp
-    core/game/game.cpp
-    core/pipe/pipe.cpp
-    core/player/player.cpp
-    core/score/score.cpp
-    core/sprite/sprite.cpp)
+        core/scenario/scenario.cpp
+        core/game/game.cpp
+        core/pipe/pipe.cpp
+        core/player/player.cpp
+        core/score/score.cpp
+        core/sprite/sprite.cpp)
 
     add_executable(flappy 
-    main/main.cpp
-    platform/interface/renderer.cpp
-    platform/interface/inputer.cpp)
+        main/main.cpp
+        core/interface/renderer.cpp
+        core/interface/inputer.cpp)
 
     target_link_libraries(flappy PRIVATE core)
     target_compile_options(flappy PRIVATE -Wall -Wextra -Wpedantic -Werror)

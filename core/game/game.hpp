@@ -1,7 +1,6 @@
 #pragma once
 
 #include "interface/renderer.hpp"
-#include <pthread.h>
 
 class Player;
 class Server;
@@ -53,9 +52,6 @@ public:
 
   // void restartGame(Player *onlinePlayer);
   void restartGame();
-
-  int host(pthread_t *thread);
-  int client(pthread_t *thread);
 
   void movement();
   void render();

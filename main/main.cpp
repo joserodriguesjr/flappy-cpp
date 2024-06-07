@@ -17,7 +17,7 @@ int main(void) {
   PipeManagerConfig pmCfg("resources/obstacles/bottomPipe.png",
                           "resources/obstacles/topPipe.png");
 
-#elif defined(ESP32)
+#elif defined(ESP_PLATFORM)
 extern "C" void app_main(void) {
   // todo: create resources for esp32
   // ScenarioConfig scnCfg();

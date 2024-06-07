@@ -2,7 +2,7 @@
 
 #ifdef DESKTOP
 #include "raylib.h"
-#elif defined(ESP32)
+#elif defined(ESP_PLATFORM)
 // Image, pixel data stored in CPU memory (RAM)
 typedef struct Image {
   void *data;  // Image raw data

@@ -1,6 +1,5 @@
 #include "player.hpp"
 #include "game/game.hpp"
-#include "interface/inputer.hpp"
 #include "scenario/scenario.hpp"
 #include "sprite/sprite.hpp"
 // #include "network/network.h"

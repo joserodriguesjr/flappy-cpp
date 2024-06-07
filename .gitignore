@@ -78,14 +78,12 @@ dkms.conf
 
 # Ignore build directory
 build/
-desktop/
+pc/
 
 # Ignore clangd cache
 .cache/
 todo.md
 
-.vscode
-.devcontainer
-
 sdkconfig
 sdkconfig.old
+compile_commands.json
