@@ -1,5 +1,6 @@
 #pragma once
 
+#include "interface/renderer.hpp"
 #include <pthread.h>
 
 class Player;
@@ -14,6 +15,8 @@ const int PLAYER_START_POSITION_Y = 400;
 
 class GameState {
 private:
+  Renderer &renderer = Renderer::instance();
+
   GameState();
   ~GameState();
 

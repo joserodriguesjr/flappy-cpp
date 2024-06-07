@@ -14,8 +14,6 @@ GameState &GameState::instance() {
   return INSTANCE;
 }
 
-#define PLAYER_START_POSITION_Y 400.0f
-
 void GameState::restartGame() {
   GameState::player->reset();
   // GameState::onlinePlayer->reset();
@@ -53,26 +51,31 @@ void GameState::renderPauseScreen() {
   int fontSize = 50;
 
   // Calculate text width and height
-  float textWidth = MeasureText(text, fontSize);
+  float textWidth = renderer.measureText(text, fontSize);
   float textHeight = fontSize;
 
   // Calculate centered position
-  float x = (GetScreenWidth() - textWidth) / 2;
-  float y = (GetScreenHeight() - textHeight) / 2;
+  float x = (renderer.getScreenWidth() - textWidth) / 2;
+  float y = (renderer.getScreenHeight() - textHeight) / 2;
   y -= 100;
 
   // Draw black rectangle behind text
   Rectangle bgRect = {x - 5, y - 5, textWidth + 10, textHeight + 10};
 
-  DrawRectangleRec(bgRect, (Color){0, 0, 0, 100});
-  DrawText(text, x, y, fontSize, WHITE);
+  renderer.drawRectangleRec(bgRect, (Color){0, 0, 0, 100});
+  renderer.drawText(text, x, y, fontSize, WHITE);
 }
 
 void GameState::renderButtons() {
   // Buttons
-  DrawRectangle(5, GetScreenHeight() - 105, 245, 95, (Color){0, 0, 0, 100});
-  DrawText("Spacebar - Jump", 10, GetScreenHeight() - 100, 20, WHITE);
-  DrawText("R - Restart game", 10, GetScreenHeight() - 80, 20, WHITE);
-  DrawText("H - Host server", 10, GetScreenHeight() - 60, 20, WHITE);
-  DrawText("C - Connect to server", 10, GetScreenHeight() - 40, 20, WHITE);
+  renderer.drawRectangle(5, renderer.getScreenHeight() - 105, 245, 95,
+                         (Color){0, 0, 0, 100});
+  renderer.drawText("Spacebar - Jump", 10, renderer.getScreenHeight() - 100, 20,
+                    WHITE);
+  renderer.drawText("R - Restart game", 10, renderer.getScreenHeight() - 80, 20,
+                    WHITE);
+  renderer.drawText("H - Host server", 10, renderer.getScreenHeight() - 60, 20,
+                    WHITE);
+  renderer.drawText("C - Connect to server", 10,
+                    renderer.getScreenHeight() - 40, 20, WHITE);
 }

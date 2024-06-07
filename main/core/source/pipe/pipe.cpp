@@ -4,8 +4,8 @@
 #include "score/score.hpp"
 
 PipeManager::PipeManager(PipeManagerConfig pmCfg)
-    : bottomPipeTexture(renderer.LoadTexture2D(pmCfg.bottomPipePath)),
-      topPipeTexture(renderer.LoadTexture2D(pmCfg.topPipePath)), offset(300),
+    : bottomPipeTexture(renderer.loadTexture2D(pmCfg.bottomPipePath)),
+      topPipeTexture(renderer.loadTexture2D(pmCfg.topPipePath)), offset(300),
       gap(200), obstacleVelocity(250) {
 
   // TODO: difficulty
@@ -18,8 +18,8 @@ PipeManager::PipeManager(PipeManagerConfig pmCfg)
 }
 
 PipeManager::~PipeManager() {
-  renderer.UnloadTexture2D(bottomPipeTexture);
-  renderer.UnloadTexture2D(topPipeTexture);
+  renderer.unloadTexture2D(bottomPipeTexture);
+  renderer.unloadTexture2D(topPipeTexture);
 }
 
 void PipeManager::movement() {
@@ -47,7 +47,8 @@ void PipeManager::movement() {
 
       PipeManager::pipes[LAST_PIPE].x = PipeManager::pipes[i].x;
       randomPipe(&PipeManager::pipes[i], 0);
-      PipeManager::pipes[i].x = GetScreenWidth() + (2 * PipeManager::offset);
+      PipeManager::pipes[i].x =
+          renderer.getScreenWidth() + (2 * PipeManager::offset);
     }
 
     // Validacao para canos perto do jogador
@@ -77,8 +78,10 @@ void PipeManager::render() {
     Vector2 topPipe = (Vector2){pipe.x, pipe.topPipeStart};
     Vector2 bottomPipe = (Vector2){pipe.x, pipe.bottomPipeStart};
 
-    DrawTextureEx(PipeManager::topPipeTexture, topPipe, 0.0, 1.0, WHITE);
-    DrawTextureEx(PipeManager::bottomPipeTexture, bottomPipe, 0.0, 1.0, WHITE);
+    renderer.drawTextureEx(PipeManager::topPipeTexture, topPipe, 0.0, 1.0,
+                           WHITE);
+    renderer.drawTextureEx(PipeManager::bottomPipeTexture, bottomPipe, 0.0, 1.0,
+                           WHITE);
   }
 }
 
@@ -91,10 +94,11 @@ void PipeManager::fillPipes() {
 }
 
 void PipeManager::randomPipe(Pipe *pipe, int i) {
-  float topPipeHeight = GetRandomValue(0, GetScreenHeight() / 2);
-  pipe->topPipeStart = (0 - GetScreenHeight()) + topPipeHeight;
+  float topPipeHeight =
+      renderer.getRandomValue(0, renderer.getScreenHeight() / 2);
+  pipe->topPipeStart = (0 - renderer.getScreenHeight()) + topPipeHeight;
   pipe->bottomPipeStart = topPipeHeight + PipeManager::gap;
-  pipe->x = (GetScreenWidth() / 3 * 2) + (PipeManager::offset * i);
+  pipe->x = (renderer.getScreenWidth() / 3 * 2) + (PipeManager::offset * i);
   pipe->jumped = false;
 }
 
@@ -120,6 +124,6 @@ bool PipeManager::pipeCollision(Pipe pipe) {
   Rectangle bottomPipe = {pipeX, bottomPipeY, pipeWidth, bottomPipeHeight};
   Rectangle topPipe = {pipeX, topPipeY, pipeWidth, topPipeHeight};
 
-  return (CheckCollisionRecs(bottomPipe, player) ||
-          CheckCollisionRecs(topPipe, player));
+  return (renderer.checkCollisionRecs(bottomPipe, player) ||
+          renderer.checkCollisionRecs(topPipe, player));
 }

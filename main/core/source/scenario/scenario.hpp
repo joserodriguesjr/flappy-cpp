@@ -14,11 +14,16 @@ struct ScenarioConfig {
   const char *bushesPath;
   const char *buildingsPath;
   const char *cloudsPath;
-};
 
+  ScenarioConfig(const char *floor, const char *bushes, const char *buildings,
+                 const char *clouds)
+      : floorPath(floor), bushesPath(bushes), buildingsPath(buildings),
+        cloudsPath(clouds) {}
+};
 class Scenario {
 private:
   Renderer &renderer = Renderer::instance();
+
   Texture2D floorTexture;
   float floorScrollSpeed;
   float floorScrollOffset;

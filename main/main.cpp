@@ -1,9 +1,6 @@
-// #include <pthread.h>
-
 #include "game/game.hpp"
 #include "interface/inputer.hpp"
 #include "interface/renderer.hpp"
-// #include "multiplayer/multiplayer.h"
 #include "pipe/pipe.hpp"
 #include "player/player.hpp"
 #include "scenario/scenario.hpp"
@@ -11,101 +8,62 @@
 
 #ifdef DESKTOP
 int main(void) {
-  ScenarioConfig scnCfg = {.floorPath = "resources/scenario/floor_complete.png",
-                           .bushesPath = "resources/scenario/bushes.png",
-                           .buildingsPath = "resources/scenario/buildings.png",
-                           .cloudsPath = "resources/scenario/clouds.png"};
+  ScenarioConfig scnCfg(
+      "resources/scenario/floor_complete.png", "resources/scenario/bushes.png",
+      "resources/scenario/buildings.png", "resources/scenario/clouds.png");
 
   const char *spritePath = "resources/flappy/flappy_mov_red_big.png";
 
-  PipeManagerConfig pmCfg = {.bottomPipePath =
-                                 "resources/obstacles/bottomPipe.png",
-                             .topPipePath = "resources/obstacles/topPipe.png"};
+  PipeManagerConfig pmCfg("resources/obstacles/bottomPipe.png",
+                          "resources/obstacles/topPipe.png");
 
 #elif defined(ESP32)
 extern "C" void app_main(void) {
-  ScenarioConfig scnCfg = {.floorPath = "resources/scenario/floor_complete.png",
-                           .bushesPath = "resources/scenario/bushes.png",
-                           .buildingsPath = "resources/scenario/buildings.png",
-                           .cloudsPath = "resources/scenario/clouds.png"};
+  // todo: create resources for esp32
+  // ScenarioConfig scnCfg();
 
-  const char *spritePath = "resources/flappy/flappy_mov_red_big.png";
+  // const char *spritePath = "";
 
-  PipeManagerConfig pmCfg = {.bottomPipePath =
-                                 "resources/obstacles/bottomPipe.png",
-                             .topPipePath = "resources/obstacles/topPipe.png"};
+  // PipeManagerConfig pmCfg();
+
+  // dummy files just to test
+  ScenarioConfig scnCfg(".png", ".png", ".png", ".png");
+
+  const char *spritePath = ".png";
+
+  PipeManagerConfig pmCfg(".png", ".png");
 #endif
 
   Renderer &renderer = Renderer::instance();
   Inputer &inputer = Inputer::instance();
 
-  renderer.Init(1200, 800);
+  renderer.init(1200, 800);
 
-  // Server server;
   Scenario scenario(scnCfg);
   Player player(spritePath, nullptr, true);
-  // Player onlinePlayer(spritePath, &server.serverSocket, false);
   Score score;
   PipeManager pipeManager(pmCfg);
 
   GameState &game = GameState::instance();
-  // game.setServer(&server);
   game.setScenario(&scenario);
   game.setPlayer(&player);
   game.setScore(&score);
   game.setPipeManager(&pipeManager);
 
-  // Subscribe(EVENT_IN_NETWORK_MESSAGE, &handle_in_network_messages);
-  // Subscribe(EVENT_OUT_NETWORK_MESSAGE, &handle_out_network_messages);
-  // Subscribe(EVENT_KEY_PRESSED, &handle_key_pressed);
-
-  // pthread_t thread;
-
-  renderer.SetFPS(60);
+  renderer.setFPS(60);
   // Detect window close button or ESC key
   //--------------------------------------------------------------------------------------
   while (!inputer.IsPressed(QUIT)) {
 
-    // Host game when 'H' is pressed
+    // Restart when 'R' is pressed
     //----------------------------------------------------------------------------------
-    // if (IsKeyPressed(KEY_H)) {
-    //   // Publish(EVENT_KEY_PRESSED, K_HOST);
-    //   restart_game(&game, &pipeManager, &onlinePlayer);
-    //   int result = game_host(&game, &thread);
-    //   if (result != 0) {
-    //     fprintf(stderr, "Thread creation failed: %s\n", strerror(result));
-    //     break;
-    //   }
-    // }
-    //----------------------------------------------------------------------------------
-
-    // Connect to host when 'C' is pressed
-    //----------------------------------------------------------------------------------
-    // if (IsKeyPressed(KEY_C)) {
-    //   // Publish(EVENT_KEY_PRESSED, K_CONNECT);
-    //   restart_game(&game, &pipeManager, &onlinePlayer);
-    //   int result = game_client(&game, &thread);
-    //   if (result != 0) {
-    //     fprintf(stderr, "Thread creation failed: %s\n", strerror(result));
-    //     break;
-    //   }
-    // }
-
-    // Restart when 'R' is pressed (If online, only host can restart)
-    //----------------------------------------------------------------------------------
-    if (inputer.IsPressed(RESTART) && (!game.online || game.hosting)) {
-      // if (game.hosting)
-      //   Publish(EVENT_OUT_NETWORK_MESSAGE, NM_GAME_RESTART);
+    if (inputer.IsPressed(RESTART))
       game.restartGame();
-    }
     //----------------------------------------------------------------------------------
 
-    // Wait for player to start the game (If online, only host can start)
+    // Wait for player to start the game
     //----------------------------------------------------------------------------------
-    if (inputer.IsPressed(JUMP) && !game.started &&
-        (!game.online || game.hosting)) {
-      // if (game.hosting)
-      // Publish(EVENT_OUT_NETWORK_MESSAGE, NM_GAME_START);
+    if (inputer.IsPressed(JUMP) && !game.started) {
       game.pause = !game.pause;
       game.started = true;
     }
@@ -115,38 +73,30 @@ extern "C" void app_main(void) {
     //----------------------------------------------------------------------------------
     if (!game.pause) {
       if (player.alive) {
-        game.deltaTime = renderer.GetDeltaTime();
+        game.deltaTime = renderer.getDeltaTime();
         player.updateSprite();
         player.movement();
         pipeManager.movement();
         scenario.movement();
       }
-
-      // if (game.online) {
-      //   onlinePlayer.updateSprite();
-      //   onlinePlayer.movement();
-      // }
     }
     //----------------------------------------------------------------------------------
 
     // Draw textures
     //----------------------------------------------------------------------------------
-    renderer.Clear();
+    renderer.clear();
 
     scenario.render();
     pipeManager.render();
     scenario.renderFloor();
     player.render();
-    // if (game.online)
-    //   onlinePlayer.render();
     score.render();
     game.renderButtons();
     if (game.pause)
       game.renderPauseScreen();
 
-    renderer.Draw();
+    renderer.draw();
     //----------------------------------------------------------------------------------
   }
-  // close_server();
-  renderer.Close();
+  renderer.close();
 }

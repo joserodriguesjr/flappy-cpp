@@ -1,5 +1,6 @@
 #pragma once
 
+#include "interface/inputer.hpp"
 #include "interface/renderer.hpp"
 
 const unsigned int NUMBER_SPRITES = 3;
@@ -9,6 +10,8 @@ const unsigned int PLAYER_JUMPSPEED = 500;
 class Player {
 private:
   Renderer &renderer = Renderer::instance();
+  Inputer &inputer = Inputer::instance();
+
   Texture2D *textures;
   Vector2 velocity;
   float jumpSpeed;

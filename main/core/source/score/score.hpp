@@ -6,6 +6,8 @@ const unsigned int SCORE_VALUE = 50;
 
 class Score {
 private:
+  Renderer &renderer = Renderer::instance();
+
   int value;
   Vector2 position;
   Font font;

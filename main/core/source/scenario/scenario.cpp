@@ -2,20 +2,20 @@
 #include "game/game.hpp"
 
 Scenario::Scenario(ScenarioConfig scnCfg)
-    : floorTexture(renderer.LoadTexture2D(scnCfg.floorPath)),
+    : floorTexture(renderer.loadTexture2D(scnCfg.floorPath)),
       floorScrollSpeed(FLOOR_SCROLLSPEED), floorScrollOffset(0.0f),
-      bushesTexture(renderer.LoadTexture2D(scnCfg.bushesPath)),
+      bushesTexture(renderer.loadTexture2D(scnCfg.bushesPath)),
       bushesScrollSpeed(BUSHES_SCROLLSPEED), bushesScrollOffset(0.0f),
-      buildingsTexture(renderer.LoadTexture2D(scnCfg.buildingsPath)),
+      buildingsTexture(renderer.loadTexture2D(scnCfg.buildingsPath)),
       buildingsScrollSpeed(BUILDINGS_SCROLLSPEED), buildingsScrollOffset(0.0f),
-      cloudsTexture(renderer.LoadTexture2D(scnCfg.cloudsPath)),
+      cloudsTexture(renderer.loadTexture2D(scnCfg.cloudsPath)),
       cloudsScrollSpeed(CLOUDS_SCROLLSPEED), cloudsScrollOffset(0.0f) {}
 
 Scenario::~Scenario() {
-  Scenario::renderer.UnloadTexture2D(floorTexture);
-  Scenario::renderer.UnloadTexture2D(bushesTexture);
-  Scenario::renderer.UnloadTexture2D(buildingsTexture);
-  Scenario::renderer.UnloadTexture2D(cloudsTexture);
+  renderer.unloadTexture2D(floorTexture);
+  renderer.unloadTexture2D(bushesTexture);
+  renderer.unloadTexture2D(buildingsTexture);
+  renderer.unloadTexture2D(cloudsTexture);
 }
 
 void Scenario::movement() {
@@ -48,30 +48,31 @@ void Scenario::render() {
   float bushesHeight = 380;
 
   // Clouds
-  DrawTextureEx(Scenario::cloudsTexture,
-                (Vector2){-Scenario::cloudsScrollOffset, cloudsHeight}, 0.0f,
-                1.0f, WHITE);
-  DrawTextureEx(
+  renderer.drawTextureEx(Scenario::cloudsTexture,
+                         (Vector2){-Scenario::cloudsScrollOffset, cloudsHeight},
+                         0.0f, 1.0f, WHITE);
+  renderer.drawTextureEx(
       Scenario::cloudsTexture,
       (Vector2){Scenario::cloudsTexture.width - Scenario::cloudsScrollOffset,
                 cloudsHeight},
       0.0f, 1.0f, WHITE);
 
   // Buildings
-  DrawTextureEx(Scenario::buildingsTexture,
-                (Vector2){-Scenario::buildingsScrollOffset, buildingsHeight},
-                0.0f, 1.0f, WHITE);
-  DrawTextureEx(Scenario::buildingsTexture,
-                (Vector2){Scenario::buildingsTexture.width -
-                              Scenario::buildingsScrollOffset,
-                          buildingsHeight},
-                0.0f, 1.0f, WHITE);
+  renderer.drawTextureEx(
+      Scenario::buildingsTexture,
+      (Vector2){-Scenario::buildingsScrollOffset, buildingsHeight}, 0.0f, 1.0f,
+      WHITE);
+  renderer.drawTextureEx(Scenario::buildingsTexture,
+                         (Vector2){Scenario::buildingsTexture.width -
+                                       Scenario::buildingsScrollOffset,
+                                   buildingsHeight},
+                         0.0f, 1.0f, WHITE);
 
   // Bushes
-  DrawTextureEx(Scenario::bushesTexture,
-                (Vector2){-Scenario::bushesScrollOffset, bushesHeight}, 0.0f,
-                1.0f, WHITE);
-  DrawTextureEx(
+  renderer.drawTextureEx(Scenario::bushesTexture,
+                         (Vector2){-Scenario::bushesScrollOffset, bushesHeight},
+                         0.0f, 1.0f, WHITE);
+  renderer.drawTextureEx(
       Scenario::bushesTexture,
       (Vector2){Scenario::bushesTexture.width - Scenario::bushesScrollOffset,
                 bushesHeight},
@@ -81,15 +82,16 @@ void Scenario::render() {
 void Scenario::renderFloor() {
   // Floor needs to be rendered after the pipe to crop the bottom texture
 
-  DrawTextureEx(Scenario::floorTexture,
-                (Vector2){-Scenario::floorScrollOffset,
-                          static_cast<float>(GetScreenHeight() -
-                                             Scenario::floorTexture.height)},
-                0.0f, 1.0f, WHITE);
-  DrawTextureEx(
+  renderer.drawTextureEx(
+      Scenario::floorTexture,
+      (Vector2){-Scenario::floorScrollOffset,
+                static_cast<float>(renderer.getScreenHeight() -
+                                   Scenario::floorTexture.height)},
+      0.0f, 1.0f, WHITE);
+  renderer.drawTextureEx(
       Scenario::floorTexture,
       (Vector2){Scenario::floorTexture.width - Scenario::floorScrollOffset,
-                static_cast<float>(GetScreenHeight() -
+                static_cast<float>(renderer.getScreenHeight() -
                                    Scenario::floorTexture.height)},
       0.0f, 1.0f, WHITE);
 }

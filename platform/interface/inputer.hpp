@@ -3,9 +3,9 @@
 class Inputer {
 public:
   static Inputer &instance();
+  virtual ~Inputer(){};
 
   virtual bool IsPressed(int action) = 0;
-  virtual ~Inputer() = default;
 };
 
 enum Actions {

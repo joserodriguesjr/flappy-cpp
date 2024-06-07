@@ -1,15 +1,13 @@
 # For more information about build system see
 # https://docs.espressif.com/projects/esp-idf/en/latest/api-guides/build-system.html
-# The following five lines of boilerplate have to be in your project's
-# CMakeLists in this exact order for cmake to work correctly
 cmake_minimum_required(VERSION 3.19)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Debug build")
-    add_definitions(-DDEBUG_BUILD)
+    set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    message(STATUS "Release build - for size optimization")
+    message(STATUS "Release build - optimized for size")
     set(CMAKE_CXX_FLAGS_RELEASE "-Os -flto -fPIC -fdata-sections -ffunction-sections -fno-exceptions  -Wl,--gc-sections -flto")
 
 else() # ESP32 build
@@ -28,6 +26,7 @@ include_directories(main/core/source platform)
 if(PLATFORM STREQUAL "Desktop")
     add_definitions(-DDESKTOP)
 
+    # link_directories(${CMAKE_SOURCE_DIR}/lib)
     include(_cmake/CPM.cmake)
     CPMAddPackage("gh:raysan5/raylib#5.0")
 
@@ -40,7 +39,6 @@ if(PLATFORM STREQUAL "Desktop")
     main/core/source/player/player.cpp
     main/core/source/score/score.cpp
     main/core/source/sprite/sprite.cpp)
-    target_link_libraries(core PRIVATE raylib)
     
     add_executable(flappy 
         main/main.cpp
@@ -49,9 +47,9 @@ if(PLATFORM STREQUAL "Desktop")
 
     # set(THREADS_PREFER_PTHREAD_FLAG ON)
     # find_package(Threads REQUIRED)
-    
-    target_link_libraries(flappy PRIVATE core)
-    # target_link_libraries(flappy PRIVATE raylib Threads::Threads)
+
+    target_link_libraries(flappy PRIVATE core raylib)
+    target_compile_options(flappy PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
 else()
     # Add ESP32 specific configurations

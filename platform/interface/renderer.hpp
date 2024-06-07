@@ -2,7 +2,7 @@
 
 #ifdef DESKTOP
 #include "raylib.h"
-#else
+#elif defined(ESP32)
 // Image, pixel data stored in CPU memory (RAM)
 typedef struct Image {
   void *data;  // Image raw data
@@ -28,6 +28,8 @@ typedef struct Texture {
   int height;      // Texture base height
   int mipmaps;     // Mipmap levels, 1 by default
   int format;      // Data format (PixelFormat type)
+
+  Texture() : id(0), width(0), height(0), mipmaps(0), format(0) {}
 } Texture;
 
 // Texture2D, same as Texture
@@ -55,6 +57,10 @@ typedef struct Font {
   Texture2D texture; // Texture atlas containing the glyphs
   Rectangle *recs;   // Rectangles in texture for the glyphs
   GlyphInfo *glyphs; // Glyphs info data
+
+  Font()
+      : baseSize(0), glyphCount(0), glyphPadding(0), texture(), recs(nullptr),
+        glyphs(nullptr) {}
 } Font;
 
 // Color, 4 components, R8G8B8A8 (32bit)
@@ -65,40 +71,77 @@ typedef struct Color {
   unsigned char a; // Color alpha value
 } Color;
 
+#if defined(__cplusplus)
+#define CLITERAL(type) type
+#else
+#define CLITERAL(type) (type)
+#endif
+
 #define WHITE                                                                  \
-  CLITERAL(Color) { 255, 255, 255, 255 } // White
-#define BLACK                                                                  \
-  CLITERAL(Color) { 0, 0, 0, 255 } // Black
-#define BLANK                                                                  \
-  CLITERAL(Color) { 0, 0, 0, 0 } // Blank (Transparent)
-#define MAGENTA                                                                \
-  CLITERAL(Color) { 255, 0, 255, 255 } // Magenta
-#define RAYWHITE                                                               \
-  CLITERAL(Color) { 245, 245, 245, 255 } // My own White (raylib logo)
+  CLITERAL(Color) { 255, 255, 255, 255 }
 #define GREEN                                                                  \
-  CLITERAL(Color) { 0, 228, 48, 255 } // Green
+  CLITERAL(Color) { 0, 228, 48, 255 }
+
 #endif
 
 class Renderer {
 public:
   static Renderer &instance();
+  virtual ~Renderer(){};
 
-  virtual void Init(int width, int height) = 0;
-  virtual void Clear() = 0;
-  virtual void Draw() = 0;
-  virtual void Close() = 0;
+  virtual void init(int width, int height) = 0;
+  virtual void clear() = 0;
+  virtual void draw() = 0;
+  virtual void close() = 0;
 
-  virtual Texture2D LoadTexture2D(const char *texturePath) = 0;
-  virtual void UnloadTexture2D(Texture2D texture) = 0;
+  virtual int getScreenHeight(void) = 0;
+  virtual int getScreenWidth(void) = 0;
 
-  virtual Image LoadNewImage(const char *fileName) = 0;
-  virtual void UnloadImage_(Image image) = 0;
+  // Get a random value between min and max (both included)
+  virtual int getRandomValue(int min, int max) = 0;
 
-  virtual Image CropImage(Image image, Rectangle rec) = 0;
-  virtual Texture2D LoadTexture2DFromImage(Image image) = 0;
+  virtual Texture2D loadTexture2D(const char *texturePath) = 0;
+  virtual void unloadTexture2D(Texture2D texture) = 0;
 
-  virtual void SetFPS(int fps) = 0;
-  virtual float GetDeltaTime() = 0;
+  virtual Image loadNewImage(const char *fileName) = 0;
+  virtual void unloadImage(Image image) = 0;
 
-  virtual ~Renderer() = default;
+  virtual Image cropImage(Image image, Rectangle rec) = 0;
+  virtual Texture2D loadTexture2DFromImage(Image image) = 0;
+
+  virtual void setFPS(int fps) = 0;
+  virtual float getDeltaTime() = 0;
+
+  // Texture drawing functions
+
+  // Draw a Texture2D
+  virtual void drawTexture(Texture2D texture, int posX, int posY,
+                           Color tint) = 0;
+  // Draw a Texture2D with extended parameters
+  virtual void drawTextureEx(Texture2D texture, Vector2 position,
+                             float rotation, float scale, Color tint) = 0;
+  // Draw a part of a texture defined by a rectangle
+  virtual void drawTextureRec(Texture2D texture, Rectangle source,
+                              Vector2 position, Color tint) = 0;
+  // Draw a part of a texture defined by a rectangle with 'pro' parameters
+  virtual void drawTexturePro(Texture2D texture, Rectangle source,
+                              Rectangle dest, Vector2 origin, float rotation,
+                              Color tint) = 0;
+
+  // Draw a color-filled rectangle
+  virtual void drawRectangle(int posX, int posY, int width, int height,
+                             Color color) = 0;
+  // Draw a color-filled rectangle
+  virtual void drawRectangleRec(Rectangle rec, Color color) = 0;
+
+  // Text drawing functions
+
+  // Draw text (using default font)
+  virtual void drawText(const char *text, int posX, int posY, int fontSize,
+                        Color color) = 0;
+  // Measure string width for default font
+  virtual int measureText(const char *text, int fontSize) = 0;
+
+  // Check collision between two rectangles
+  virtual bool checkCollisionRecs(Rectangle rec1, Rectangle rec2) = 0;
 };

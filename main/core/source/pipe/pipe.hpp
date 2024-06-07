@@ -8,6 +8,9 @@ const unsigned int LAST_PIPE = MAX_PIPE_COUNT - 1;
 struct PipeManagerConfig {
   const char *bottomPipePath;
   const char *topPipePath;
+
+  PipeManagerConfig(const char *bottomPipe, const char *topPipe)
+      : bottomPipePath(bottomPipe), topPipePath(topPipe) {}
 };
 
 typedef struct Pipe {
@@ -21,6 +24,7 @@ typedef struct Pipe {
 class PipeManager {
 private:
   Renderer &renderer = Renderer::instance();
+
   Texture2D bottomPipeTexture;
   Texture2D topPipeTexture;
   Pipe pipes[MAX_PIPE_COUNT];

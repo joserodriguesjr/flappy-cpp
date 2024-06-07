@@ -1,5 +1,6 @@
 #include "player.hpp"
 #include "game/game.hpp"
+#include "interface/inputer.hpp"
 #include "scenario/scenario.hpp"
 #include "sprite/sprite.hpp"
 // #include "network/network.h"
@@ -9,10 +10,10 @@ Player::Player(const char *spritePath, int *sockfd, bool local)
     : velocity({0, 0}), jumpSpeed(PLAYER_JUMPSPEED), spinDegree(0),
       tiltAngle(0), sockfd(sockfd), local(local), alive(true) {
 
-  Image spriteImage = renderer.LoadNewImage(spritePath);
+  Image spriteImage = renderer.loadNewImage(spritePath);
   Player::textures = Sprite::loadTextures(spriteImage, NUMBER_SPRITES);
   Player::current = Player::textures[0];
-  UnloadImage(spriteImage);
+  renderer.unloadImage(spriteImage);
 
   Color color = WHITE;
   if (!local) {
@@ -46,7 +47,7 @@ void Player::updateSprite() {
 void Player::movement() {
   GameState &gameState = GameState::instance();
 
-  if (IsKeyPressed(KEY_SPACE)) {
+  if (inputer.IsPressed(JUMP)) {
     Player::velocity.y = -Player::jumpSpeed;
     // Publish(EVENT_KEY_PRESSED, K_SPACEBAR);
     // if (Player::local)
@@ -56,7 +57,8 @@ void Player::movement() {
   Player::velocity.y += GRAVITY * gameState.deltaTime;
   Player::position.y += Player::velocity.y * gameState.deltaTime;
 
-  bool hit_floor = Player::position.y >= (GetScreenHeight() - FLOOR_HEIGHT);
+  bool hit_floor =
+      Player::position.y >= (renderer.getScreenHeight() - FLOOR_HEIGHT);
   if (hit_floor)
     player_dead(this);
   // Publish(EVENT_COLLISION, GROUND, gameState);
@@ -73,8 +75,8 @@ void Player::render() {
                       static_cast<float>(Player::current.height)};
     Vector2 origin = {static_cast<float>(Player::current.width / 2),
                       static_cast<float>(Player::current.height / 2)};
-    DrawTexturePro(Player::current, source, dest, origin, tiltAngle,
-                   Player::color);
+    renderer.drawTexturePro(Player::current, source, dest, origin, tiltAngle,
+                            Player::color);
   } else {
     // Transparency
     if (Player::color.a <= 5)
@@ -103,8 +105,8 @@ void Player::render() {
                       static_cast<float>(Player::current.height)};
     Vector2 origin = {static_cast<float>(Player::current.width / 2),
                       static_cast<float>(Player::current.height / 2)};
-    DrawTexturePro(Player::current, source, dest, origin, Player::tiltAngle,
-                   Player::color);
+    renderer.drawTexturePro(Player::current, source, dest, origin,
+                            Player::tiltAngle, Player::color);
     Player::spinDegree++;
   }
 }
