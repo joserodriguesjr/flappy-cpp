@@ -1,14 +1,14 @@
 run:
-	./desktop/flappy
+	./pc/flappy
 
 clean-pc:
-	rm -rf desktop/
+	rm -rf pc/
 
 build-pc-debug:
-	cmake -DPLATFORM=Desktop -DCMAKE_BUILD_TYPE=Desktop-Debug -S . -B desktop && cmake --build desktop
+	cmake -DPLATFORM=Desktop -DCMAKE_BUILD_TYPE=Desktop-Debug -S . -B pc && cmake --build pc
 
 build-pc-release:
-	cmake -DPLATFORM=Desktop -DCMAKE_BUILD_TYPE=Desktop-Release -S . -B desktop && cmake --build desktop
+	cmake -DPLATFORM=Desktop -DCMAKE_BUILD_TYPE=Desktop-Release -S . -B pc && cmake --build pc
 
 clean-esp32:
 	idf.py clean
@@ -23,4 +23,4 @@ build-esp32-release:
 	idf.py -DPLATFORM=Esp32 -DCMAKE_BUILD_TYPE=Esp32-Release build 
 
 _load-compile-commands: # If clangd cant find headers, run this command
-	cp desktop/compile_commands.json ./compile_commands.json
+	cp pc/compile_commands.json ./compile_commands.json
