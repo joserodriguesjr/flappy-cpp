@@ -10,7 +10,7 @@ Player::Player(const char *spritePath, int *sockfd, bool local)
       tiltAngle(0), sockfd(sockfd), local(local), alive(true) {
 
   Image spriteImage = renderer.loadNewImage(spritePath);
-  Player::textures = Sprite::loadTextures(spriteImage, NUMBER_SPRITES);
+  Player::textures = Sprite::loadSprites(spriteImage, NUMBER_SPRITES);
   Player::current = Player::textures[0];
   renderer.unloadImage(spriteImage);
 
@@ -27,7 +27,7 @@ Player::Player(const char *spritePath, int *sockfd, bool local)
   }
 }
 
-Player::~Player() { Sprite::unloadTextures(Player::textures, NUMBER_SPRITES); }
+Player::~Player() { Sprite::unloadSprites(Player::textures, NUMBER_SPRITES); }
 
 void Player::updateSprite() {
   static int framesCounter, currentFrame;

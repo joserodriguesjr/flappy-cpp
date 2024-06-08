@@ -68,8 +68,7 @@ void PipeManager::checkPipeProximityToPlayer(Pipe &pipe) {
 }
 
 void PipeManager::render() {
-  for (int i = 0; i < MAX_PIPE_COUNT; i++) {
-    Pipe pipe = PipeManager::pipes[i];
+  for (auto &pipe : pipes) {
     Vector2 topPipe = (Vector2){pipe.x, pipe.topPipeStart};
     Vector2 bottomPipe = (Vector2){pipe.x, pipe.bottomPipeStart};
 
