@@ -25,6 +25,7 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Esp32-Release")
     
 else()
     message( FATAL_ERROR "Please, specify a build type" )
+    
 endif()
 
 project(flappy VERSION 0.1.0 LANGUAGES CXX)
@@ -35,42 +36,28 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(core platform)
 
+add_library(core STATIC
+    core/scenario/scenario.cpp
+    core/game/game.cpp
+    core/pipe/pipe.cpp
+    core/player/player.cpp
+    core/score/score.cpp
+    core/sprite/sprite.cpp)
+
+add_executable(flappy
+    main/main.cpp
+    core/interface/renderer.cpp
+    core/interface/inputer.cpp)
+
+target_compile_options(flappy PRIVATE -Wall -Wextra -Wpedantic -Werror)
+
 if(PLATFORM STREQUAL "Desktop")
     include(_cmake/CPM.cmake)
     CPMAddPackage("gh:raysan5/raylib#5.0")
-
-    add_library(core STATIC
-        core/scenario/scenario.cpp
-        core/game/game.cpp
-        core/pipe/pipe.cpp
-        core/player/player.cpp
-        core/score/score.cpp
-        core/sprite/sprite.cpp)
-    
-    add_executable(flappy 
-        main/main.cpp
-        core/interface/renderer.cpp
-        core/interface/inputer.cpp)
-
     target_link_libraries(flappy PRIVATE core raylib)
-    target_compile_options(flappy PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
 elseif(PLATFORM STREQUAL "Esp32")
-    add_library(core STATIC
-        core/scenario/scenario.cpp
-        core/game/game.cpp
-        core/pipe/pipe.cpp
-        core/player/player.cpp
-        core/score/score.cpp
-        core/sprite/sprite.cpp)
-
-    add_executable(flappy 
-        main/main.cpp
-        core/interface/renderer.cpp
-        core/interface/inputer.cpp)
-
     target_link_libraries(flappy PRIVATE core)
-    target_compile_options(flappy PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
 else()
     message( FATAL_ERROR "Please, specify a platform" )
