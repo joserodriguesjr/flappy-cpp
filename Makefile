@@ -22,5 +22,8 @@ build-esp32-debug:
 build-esp32-release:
 	idf.py -DPLATFORM=Esp32 -DCMAKE_BUILD_TYPE=Esp32-Release build 
 
+build-pico:
+	cmake -S platform/pico -B platform/pico/build && cmake --build platform/pico/build
+
 _load-compile-commands: # If clangd cant find headers, run this command
 	cp pc/compile_commands.json ./compile_commands.json
