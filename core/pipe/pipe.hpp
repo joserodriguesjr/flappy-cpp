@@ -1,5 +1,6 @@
 #pragma once
 
+#include "game/game.hpp"
 #include "interface/renderer.hpp"
 
 const unsigned int MAX_PIPE_COUNT = 7;
@@ -23,6 +24,8 @@ typedef struct Pipe {
 
 class PipeManager {
 private:
+  GameState &gameState = GameState::instance();
+
   Renderer &renderer = Renderer::instance();
 
   Texture2D bottomPipeTexture;
@@ -37,6 +40,9 @@ private:
   // int incObstacleVelocity;
   void randomPipe(Pipe *pipe, int i);
   bool pipeCollision(Pipe pipe);
+  void updatePipePosition(Pipe &pipe);
+  void handlePipeReset(Pipe &pipe);
+  void checkPipeProximityToPlayer(Pipe &pipe);
 
 public:
   PipeManager(PipeManagerConfig pmCfg);

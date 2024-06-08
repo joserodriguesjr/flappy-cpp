@@ -23,51 +23,46 @@ PipeManager::~PipeManager() {
 }
 
 void PipeManager::movement() {
-  GameState &gameState = GameState::instance();
+  for (auto &pipe : pipes) {
+    updatePipePosition(pipe);
+    handlePipeReset(pipe);
+    checkPipeProximityToPlayer(pipe);
+  }
+}
 
-  for (int i = 0; i < MAX_PIPE_COUNT; i++) {
-    // Atualizar posição dos tubos
-    int newPosition = PipeManager::pipes[i].x -
-                      PipeManager::obstacleVelocity * gameState.deltaTime;
+void PipeManager::updatePipePosition(Pipe &pipe) {
+  int newPosition = pipe.x - obstacleVelocity * gameState.deltaTime;
 
-    if (newPosition <= 0 && i != LAST_PIPE)
-      PipeManager::pipes[i].x = 0;
-    else
-      PipeManager::pipes[i].x = newPosition;
+  if (newPosition <= 0 && &pipe != &pipes[LAST_PIPE]) {
+    pipe.x = 0;
+  } else {
+    pipe.x = newPosition;
+  }
+}
 
-    // Verifique se o tubo foi passado para gerar novo. Quando o cano chegar no
-    // eixo X = 0, ele ira se tornar o ultimo cano da lista e um novo cano sera
-    // gerado em sua posicao da lista, com novos valores
-    if (PipeManager::pipes[i].x == 0) {
-      PipeManager::pipes[LAST_PIPE].bottomPipeStart =
-          PipeManager::pipes[i].bottomPipeStart;
+void PipeManager::handlePipeReset(Pipe &pipe) {
+  if (pipe.x == 0) {
+    pipes[LAST_PIPE].bottomPipeStart = pipe.bottomPipeStart;
+    pipes[LAST_PIPE].topPipeStart = pipe.topPipeStart;
+    pipes[LAST_PIPE].x = pipe.x;
 
-      PipeManager::pipes[LAST_PIPE].topPipeStart =
-          PipeManager::pipes[i].topPipeStart;
+    randomPipe(&pipe, 0);
+    pipe.x = renderer.getScreenWidth() + (2 * offset);
+  }
+}
 
-      PipeManager::pipes[LAST_PIPE].x = PipeManager::pipes[i].x;
-      randomPipe(&PipeManager::pipes[i], 0);
-      PipeManager::pipes[i].x =
-          renderer.getScreenWidth() + (2 * PipeManager::offset);
+void PipeManager::checkPipeProximityToPlayer(Pipe &pipe) {
+  bool pipeCloseToPlayer = pipe.x < (PLAYER_START_POSITION_X + 50) &&
+                           pipe.x > (PLAYER_START_POSITION_X - 50);
+
+  if (pipeCloseToPlayer) {
+    if (pipeCollision(pipe)) {
+      Player::player_dead(gameState.getPlayer());
     }
 
-    // Validacao para canos perto do jogador
-    bool pipeCloseToPlayer =
-        PipeManager::pipes[i].x < (PLAYER_START_POSITION_X + 50) &&
-        PipeManager::pipes[i].x > (PLAYER_START_POSITION_X - 50);
-
-    if (pipeCloseToPlayer) {
-      // Verifica se acertou cano para cada cano perto do jogador
-      if (PipeManager::pipeCollision(PipeManager::pipes[i])) {
-        // Publish(EVENT_COLLISION, PIPE, gameState);
-        Player::player_dead(gameState.getPlayer());
-      }
-      // Se player passou pelo cano, ganha pontos
-      if (PipeManager::pipes[i].x <= PLAYER_START_POSITION_X &&
-          PipeManager::pipes[i].jumped == false) {
-        PipeManager::pipes[i].jumped = true;
-        gameState.getScore()->update();
-      }
+    if (pipe.x <= PLAYER_START_POSITION_X && !pipe.jumped) {
+      pipe.jumped = true;
+      gameState.getScore()->update();
     }
   }
 }
