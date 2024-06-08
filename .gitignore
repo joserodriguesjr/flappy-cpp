@@ -78,7 +78,6 @@ dkms.conf
 
 # Ignore build directory
 build/
-pc/
 
 # Ignore clangd cache
 .cache/
