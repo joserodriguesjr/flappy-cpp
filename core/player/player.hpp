@@ -33,8 +33,4 @@ public:
   void movement();
   void render();
   void reset();
-
-  // TODO: FIX THIS
-  static void player_jump(void *p);
-  static void player_dead(Player *p);
 };

@@ -51,7 +51,7 @@ void PipeManager::checkPipeProximityToPlayer(Pipe &pipe) {
 
   if (pipeCloseToPlayer) {
     if (pipeCollision(pipe)) {
-      Player::player_dead(gameState.getPlayer());
+      gameState.getPlayer()->alive = false;
     }
 
     if (pipe.x <= PLAYER_START_POSITION_X && !pipe.jumped) {
