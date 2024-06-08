@@ -9,13 +9,16 @@
 #ifdef DESKTOP
 int main(void) {
   ScenarioConfig scnCfg(
-      "resources/scenario/floor_complete.png", "resources/scenario/bushes.png",
-      "resources/scenario/buildings.png", "resources/scenario/clouds.png");
+      "platform/desktop/resources/scenario/floor_complete.png",
+      "platform/desktop/resources/scenario/bushes.png",
+      "platform/desktop/resources/scenario/buildings.png",
+      "platform/desktop/resources/scenario/clouds.png");
 
-  const char *spritePath = "resources/flappy/flappy_mov_red_big.png";
+  const char *spritePath =
+      "platform/desktop/resources/flappy/flappy_mov_red_big.png";
 
-  PipeManagerConfig pmCfg("resources/obstacles/bottomPipe.png",
-                          "resources/obstacles/topPipe.png");
+  PipeManagerConfig pmCfg("platform/desktop/resources/obstacles/bottomPipe.png",
+                          "platform/desktop/resources/obstacles/topPipe.png");
 
 #elif defined(ESP_PLATFORM)
 extern "C" void app_main(void) {
