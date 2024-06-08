@@ -46,16 +46,14 @@ void Player::movement() {
 
   if (inputer.IsPressed(JUMP)) {
     Player::velocity.y = -Player::jumpSpeed;
-    // if (Player::local)
-    // Player::player_jump(this);
   }
 
   Player::velocity.y += GRAVITY * gameState.deltaTime;
   Player::position.y += Player::velocity.y * gameState.deltaTime;
 
-  bool hit_floor =
+  bool hitFloor =
       Player::position.y >= (renderer.getScreenHeight() - FLOOR_HEIGHT);
-  if (hit_floor)
+  if (hitFloor)
     Player::alive = false;
 }
 
