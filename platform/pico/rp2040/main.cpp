@@ -7,7 +7,8 @@
 
 #include "pico/stdio.h"
 #include "pico/stdlib.h"
-#include "st7789.h"
+#include "st7789.hpp"
+#include <cstdlib>
 // #include <stdlib.h>
 
 // lcd configuration

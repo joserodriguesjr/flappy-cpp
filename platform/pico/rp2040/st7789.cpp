@@ -5,10 +5,10 @@
  *
  */
 
-#include "st7789.h"
+#include "st7789.hpp"
 #include "hardware/gpio.h"
 #include "pico/stdlib.h"
-#include <string.h>
+#include <cstring>
 
 static struct st7789_config st7789_cfg;
 static uint16_t st7789_width;
@@ -50,10 +50,10 @@ static void st7789_cmd(uint8_t cmd, const uint8_t *data, size_t len) {
 
 void st7789_caset(uint16_t xs, uint16_t xe) {
   uint8_t data[] = {
-      xs >> 8,
-      xs & 0xff,
-      xe >> 8,
-      xe & 0xff,
+      static_cast<uint8_t>(xs >> 8),
+      static_cast<uint8_t>(xs & 0xff),
+      static_cast<uint8_t>(xe >> 8),
+      static_cast<uint8_t>(xe & 0xff),
   };
 
   // CASET (2Ah): Column Address Set
@@ -62,10 +62,10 @@ void st7789_caset(uint16_t xs, uint16_t xe) {
 
 void st7789_raset(uint16_t ys, uint16_t ye) {
   uint8_t data[] = {
-      ys >> 8,
-      ys & 0xff,
-      ye >> 8,
-      ye & 0xff,
+      static_cast<uint8_t>(ys >> 8),
+      static_cast<uint8_t>(ys & 0xff),
+      static_cast<uint8_t>(ye >> 8),
+      static_cast<uint8_t>(ye & 0xff),
   };
 
   // RASET (2Bh): Row Address Set
@@ -120,7 +120,8 @@ void st7789_init(const struct st7789_config *config, uint16_t width,
   // COLMOD (3Ah): Interface Pixel Format
   // - RGB interface color format     = 65K of RGB interface
   // - Control interface color format = 16bit/pixel
-  st7789_cmd(0x3a, (uint8_t[]){0x55}, 1);
+  uint8_t data1[] = {0x55};
+  st7789_cmd(0x3a, data1, 1);
   sleep_ms(10);
 
   // MADCTL (36h): Memory Data Access Control
@@ -130,7 +131,8 @@ void st7789_init(const struct st7789_config *config, uint16_t width,
   // - Line Address Order            = LCD Refresh Top to Bottom
   // - RGB/BGR Order                 = RGB
   // - Display Data Latch Data Order = LCD Refresh Left to Right
-  st7789_cmd(0x36, (uint8_t[]){0x00}, 1);
+  uint8_t data2[] = {0x00};
+  st7789_cmd(0x36, data2, 1);
 
   st7789_caset(0, width);
   st7789_raset(0, height);
@@ -183,7 +185,8 @@ void st7789_write(const void *data, size_t len) {
     st7789_data_mode = true;
   }
 
-  spi_write16_blocking(st7789_cfg.spi, data, len / 2);
+  spi_write16_blocking(st7789_cfg.spi, reinterpret_cast<const uint16_t *>(data),
+                       len / 2);
 }
 
 void st7789_put(uint16_t pixel) { st7789_write(&pixel, sizeof(pixel)); }
@@ -204,7 +207,8 @@ void st7789_set_cursor(uint16_t x, uint16_t y) {
 }
 
 void st7789_vertical_scroll(uint16_t row) {
-  uint8_t data[] = {(row >> 8) & 0xff, row & 0x00ff};
+  uint8_t data[] = {static_cast<uint8_t>((row >> 8) & 0xff),
+                    static_cast<uint8_t>(row & 0x00ff)};
 
   // VSCSAD (37h): Vertical Scroll Start Address of RAM
   st7789_cmd(0x37, data, sizeof(data));
