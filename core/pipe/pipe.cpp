@@ -8,12 +8,6 @@ PipeManager::PipeManager(PipeManagerConfig pmCfg)
       topPipeTexture(renderer.loadTexture2D(pmCfg.topPipePath)), offset(300),
       gap(200), obstacleVelocity(250) {
 
-  // TODO: difficulty
-  // PipeManager::incGap = inc_gap;
-  // PipeManager::difMaxHeight = dif_max_height;
-  // PipeManager::incDifMaxHeight = inc_dif_max_height;
-  // PipeManager::incObstacleVelocity = inc_obstacle_velocity;
-
   PipeManager::fillPipes();
 }
 
