@@ -30,4 +30,4 @@ build-pico:
 	cmake -S platform/pico -B $(PICO_BUILD_DIR) && cmake --build $(PICO_BUILD_DIR)
 
 _load-compile-commands: # If clangd cant find headers, run this command
-	cp pc/compile_commands.json ./compile_commands.json
+	cp $(DESKTOP_BUILD_DIR)/compile_commands.json ./compile_commands.json
