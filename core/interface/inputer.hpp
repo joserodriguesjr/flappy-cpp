@@ -5,7 +5,8 @@ public:
   static Inputer &instance();
   virtual ~Inputer(){};
 
-  virtual bool IsPressed(int action) = 0;
+  virtual void init() = 0;
+  virtual bool isPressed(int action) = 0;
 };
 
 enum Actions {

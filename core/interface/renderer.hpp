@@ -2,7 +2,7 @@
 
 #ifdef DESKTOP
 #include "raylib.h"
-#elif defined(ESP_PLATFORM)
+#else
 // Image, pixel data stored in CPU memory (RAM)
 typedef struct Image {
   void *data;  // Image raw data
@@ -71,16 +71,8 @@ typedef struct Color {
   unsigned char a; // Color alpha value
 } Color;
 
-#if defined(__cplusplus)
-#define CLITERAL(type) type
-#else
-#define CLITERAL(type) (type)
-#endif
-
-#define WHITE                                                                  \
-  CLITERAL(Color) { 255, 255, 255, 255 }
-#define GREEN                                                                  \
-  CLITERAL(Color) { 0, 228, 48, 255 }
+#define WHITE 0xffff
+#define GREEN 0x07E0
 
 #endif
 

@@ -44,7 +44,7 @@ void Player::updateSprite() {
 void Player::movement() {
   GameState &gameState = GameState::instance();
 
-  if (inputer.IsPressed(JUMP)) {
+  if (inputer.isPressed(JUMP)) {
     Player::velocity.y = -Player::jumpSpeed;
   }
 
