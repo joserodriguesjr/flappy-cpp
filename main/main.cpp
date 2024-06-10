@@ -6,8 +6,8 @@
 #include "scenario/scenario.hpp"
 #include "score/score.hpp"
 
-#ifdef DESKTOP
 int main(void) {
+#ifdef DESKTOP
   ScenarioConfig scnCfg(
       "platform/desktop/resources/scenario/floor_complete.png",
       "platform/desktop/resources/scenario/bushes.png",
@@ -20,9 +20,7 @@ int main(void) {
   PipeManagerConfig pmCfg("platform/desktop/resources/obstacles/bottomPipe.png",
                           "platform/desktop/resources/obstacles/topPipe.png");
 
-#elif defined(ESP_PLATFORM)
-extern "C" void app_main(void) {
-  // todo: create resources for esp32
+#elif defined(PICO)
   // ScenarioConfig scnCfg();
 
   // const char *spritePath = "";
@@ -40,6 +38,7 @@ extern "C" void app_main(void) {
   Renderer &renderer = Renderer::instance();
   Inputer &inputer = Inputer::instance();
 
+  inputer.init();
   renderer.init(1200, 800);
 
   Scenario scenario(scnCfg);
@@ -56,17 +55,17 @@ extern "C" void app_main(void) {
   renderer.setFPS(60);
   // Detect window close button or ESC key
   //--------------------------------------------------------------------------------------
-  while (!inputer.IsPressed(QUIT)) {
+  while (!inputer.isPressed(QUIT)) {
 
     // Restart when 'R' is pressed
     //----------------------------------------------------------------------------------
-    if (inputer.IsPressed(RESTART))
+    if (inputer.isPressed(RESTART))
       game.restartGame();
     //----------------------------------------------------------------------------------
 
     // Wait for player to start the game
     //----------------------------------------------------------------------------------
-    if (inputer.IsPressed(JUMP) && !game.started) {
+    if (inputer.isPressed(JUMP) && !game.started) {
       game.pause = !game.pause;
       game.started = true;
     }

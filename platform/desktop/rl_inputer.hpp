@@ -16,7 +16,9 @@ public:
     return instance;
   }
 
-  bool IsPressed(int key) override {
+  void init() override { ; }
+
+  bool isPressed(int key) override {
     if (key == RESTART)
       return IsKeyPressed(KEY_R);
     else if (key == JUMP)
