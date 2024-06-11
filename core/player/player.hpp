@@ -1,5 +1,6 @@
 #pragma once
 
+#include "interface/color.hpp"
 #include "interface/inputer.hpp"
 #include "interface/renderer.hpp"
 
@@ -19,7 +20,7 @@ private:
   float tiltAngle;
   int *sockfd;
   bool local;
-  Color color;
+  Tint tint;
 
 public:
   Texture2D current;

@@ -1,7 +1,10 @@
 #pragma once
 
+#include "color.hpp"
+
 #ifdef DESKTOP
 #include "raylib.h"
+
 #else
 // Image, pixel data stored in CPU memory (RAM)
 typedef struct Image {
@@ -63,17 +66,6 @@ typedef struct Font {
         glyphs(nullptr) {}
 } Font;
 
-// Color, 4 components, R8G8B8A8 (32bit)
-typedef struct Color {
-  unsigned char r; // Color red value
-  unsigned char g; // Color green value
-  unsigned char b; // Color blue value
-  unsigned char a; // Color alpha value
-} Color;
-
-#define WHITE 0xffff
-#define GREEN 0x07E0
-
 #endif
 
 class Renderer {
@@ -108,29 +100,29 @@ public:
 
   // Draw a Texture2D
   virtual void drawTexture(Texture2D texture, int posX, int posY,
-                           Color tint) = 0;
+                           Tint tint) = 0;
   // Draw a Texture2D with extended parameters
   virtual void drawTextureEx(Texture2D texture, Vector2 position,
-                             float rotation, float scale, Color tint) = 0;
+                             float rotation, float scale, Tint tint) = 0;
   // Draw a part of a texture defined by a rectangle
   virtual void drawTextureRec(Texture2D texture, Rectangle source,
-                              Vector2 position, Color tint) = 0;
+                              Vector2 position, Tint tint) = 0;
   // Draw a part of a texture defined by a rectangle with 'pro' parameters
   virtual void drawTexturePro(Texture2D texture, Rectangle source,
                               Rectangle dest, Vector2 origin, float rotation,
-                              Color tint) = 0;
+                              Tint tint) = 0;
 
   // Draw a color-filled rectangle
   virtual void drawRectangle(int posX, int posY, int width, int height,
-                             Color color) = 0;
+                             Tint tint) = 0;
   // Draw a color-filled rectangle
-  virtual void drawRectangleRec(Rectangle rec, Color color) = 0;
+  virtual void drawRectangleRec(Rectangle rec, Tint tint) = 0;
 
   // Text drawing functions
 
   // Draw text (using default font)
   virtual void drawText(const char *text, int posX, int posY, int fontSize,
-                        Color color) = 0;
+                        Tint tint) = 0;
   // Measure string width for default font
   virtual int measureText(const char *text, int fontSize) = 0;
 

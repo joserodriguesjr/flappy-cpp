@@ -1,5 +1,6 @@
 #pragma once
 
+#include "interface/color.hpp"
 #include "interface/renderer.hpp"
 
 const unsigned int SCORE_VALUE = 50;
@@ -11,8 +12,8 @@ private:
   int value;
   Vector2 position;
   Font font;
-  Color color;
-  Color backgroundColor;
+  Tint color;
+  Tint backgroundColor;
 
 public:
   Score();

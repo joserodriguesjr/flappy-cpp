@@ -1,10 +1,9 @@
 #include "score.hpp"
 #include <cstdio>
 
-Score::Score() : value(0), position({10, 10}), font(), color(WHITE) {
-  Score::backgroundColor = GREEN;
-  Score::backgroundColor.a = 100;
-}
+Score::Score()
+    : value(0), position({10, 10}), font(), color(WHITE),
+      backgroundColor(LIGHT_GREEN) {}
 
 void Score::update() { Score::value += SCORE_VALUE; }
 

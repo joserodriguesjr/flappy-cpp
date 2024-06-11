@@ -5,24 +5,14 @@
 
 Player::Player(const char *spritePath, int *sockfd, bool local)
     : velocity({0, 0}), jumpSpeed(PLAYER_JUMPSPEED), spinDegree(0),
-      tiltAngle(0), sockfd(sockfd), local(local), alive(true) {
+      tiltAngle(0), sockfd(sockfd), local(local), tint(WHITE),
+      position((Vector2){PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y}),
+      alive(true) {
 
   Image spriteImage = renderer.loadNewImage(spritePath);
   Player::textures = Sprite::loadSprites(spriteImage, NUMBER_SPRITES);
   Player::current = Player::textures[0];
   renderer.unloadImage(spriteImage);
-
-  Color color = WHITE;
-  if (!local) {
-    Player::position =
-        (Vector2){PLAYER_START_POSITION_X - 50, PLAYER_START_POSITION_Y};
-    color.a /= 2;
-    Player::color = color;
-  } else {
-    Player::position =
-        (Vector2){PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y};
-    Player::color = color;
-  }
 }
 
 Player::~Player() { Sprite::unloadSprites(Player::textures, NUMBER_SPRITES); }
@@ -75,7 +65,7 @@ void Player::render() {
 
     // Render the texture with the calculated tilt angle
     renderer.drawTexturePro(Player::current, source, dest, origin,
-                            Player::tiltAngle, Player::color);
+                            Player::tiltAngle, Player::tint);
   } else {
     GameState &gameState = GameState::instance();
     float deltaTime = gameState.deltaTime;
@@ -98,7 +88,7 @@ void Player::render() {
 
     // Render the texture without any tilt angle
     renderer.drawTexturePro(Player::current, source, dest, origin,
-                            Player::tiltAngle, Player::color);
+                            Player::tiltAngle, Player::tint);
   }
 }
 
@@ -108,5 +98,4 @@ void Player::reset() {
   Player::velocity = (Vector2){0.0f, 0.0f};
   Player::spinDegree = 0;
   Player::tiltAngle = 0;
-  Player::color.a = 255;
 }

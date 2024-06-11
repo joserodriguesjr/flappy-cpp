@@ -1,5 +1,6 @@
 #pragma once
 
+#include "interface/color.hpp"
 #include "interface/renderer.hpp"
 #include "raylib.h"
 
@@ -64,37 +65,79 @@ public:
   float getDeltaTime() override { return GetFrameTime(); }
 
   virtual void drawTexture(Texture2D texture, int posX, int posY,
-                           Color tint) override {
-    DrawTexture(texture, posX, posY, tint);
+                           Tint tint) override {
+    switch (tint.type) {
+    case TintType::COLOR:
+      DrawTexture(texture, posX, posY, tint.color);
+      break;
+    case TintType::HEX:
+      break;
+    }
   };
 
   virtual void drawTextureEx(Texture2D texture, Vector2 position,
-                             float rotation, float scale, Color tint) override {
-    DrawTextureEx(texture, position, rotation, scale, tint);
+                             float rotation, float scale, Tint tint) override {
+    switch (tint.type) {
+    case TintType::COLOR:
+      DrawTextureEx(texture, position, rotation, scale, tint.color);
+      break;
+    case TintType::HEX:
+      break;
+    }
   };
 
   virtual void drawTextureRec(Texture2D texture, Rectangle source,
-                              Vector2 position, Color tint) override {
-    DrawTextureRec(texture, source, position, tint);
-  };
+                              Vector2 position, Tint tint) override {
+    switch (tint.type) {
+    case TintType::COLOR:
+      DrawTextureRec(texture, source, position, tint.color);
+      break;
+    case TintType::HEX:
+      break;
+    };
+  }
 
   virtual void drawTexturePro(Texture2D texture, Rectangle source,
                               Rectangle dest, Vector2 origin, float rotation,
-                              Color tint) override {
-    DrawTexturePro(texture, source, dest, origin, rotation, tint);
+                              Tint tint) override {
+    switch (tint.type) {
+    case TintType::COLOR:
+      DrawTexturePro(texture, source, dest, origin, rotation, tint.color);
+      break;
+    case TintType::HEX:
+      break;
+    };
   };
 
   virtual void drawRectangle(int posX, int posY, int width, int height,
-                             Color color) override {
-    DrawRectangle(posX, posY, width, height, color);
+                             Tint tint) override {
+    switch (tint.type) {
+    case TintType::COLOR:
+      DrawRectangle(posX, posY, width, height, tint.color);
+      break;
+    case TintType::HEX:
+      break;
+    };
   };
-  virtual void drawRectangleRec(Rectangle rec, Color color) override {
-    DrawRectangleRec(rec, color);
+  virtual void drawRectangleRec(Rectangle rec, Tint tint) override {
+    switch (tint.type) {
+    case TintType::COLOR:
+      DrawRectangleRec(rec, tint.color);
+      break;
+    case TintType::HEX:
+      break;
+    };
   };
 
   virtual void drawText(const char *text, int posX, int posY, int fontSize,
-                        Color color) override {
-    DrawText(text, posX, posY, fontSize, color);
+                        Tint tint) override {
+    switch (tint.type) {
+    case TintType::COLOR:
+      DrawText(text, posX, posY, fontSize, tint.color);
+      break;
+    case TintType::HEX:
+      break;
+    };
   };
   virtual int measureText(const char *text, int fontSize) override {
     return MeasureText(text, fontSize);

@@ -1,4 +1,5 @@
 #include "game/game.hpp"
+#include "interface/color.hpp"
 #include "pipe/pipe.hpp"
 #include "player/player.hpp"
 #include "score/score.hpp"
@@ -62,14 +63,14 @@ void GameState::renderPauseScreen() {
   // Draw black rectangle behind text
   Rectangle bgRect = {x - 5, y - 5, textWidth + 10, textHeight + 10};
 
-  renderer.drawRectangleRec(bgRect, (Color){0, 0, 0, 100});
+  renderer.drawRectangleRec(bgRect, LIGHT_BLACK);
   renderer.drawText(text, x, y, fontSize, WHITE);
 }
 
 void GameState::renderButtons() {
   // Buttons
   renderer.drawRectangle(5, renderer.getScreenHeight() - 105, 245, 95,
-                         (Color){0, 0, 0, 100});
+                         LIGHT_BLACK);
   renderer.drawText("Spacebar - Jump", 10, renderer.getScreenHeight() - 100, 20,
                     WHITE);
   renderer.drawText("R - Restart game", 10, renderer.getScreenHeight() - 80, 20,
