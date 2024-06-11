@@ -26,7 +26,13 @@ build-esp32-debug:
 build-esp32-release:
 	idf.py -B $(ESP32_BUILD_DIR) -DPLATFORM=Esp32 -DCMAKE_BUILD_TYPE=Esp32-Release build 
 
+clean-pico:
+	rm -rf $(PICO_BUILD_DIR)
+
 build-pico:
+	cmake -DPLATFORM=pico -DCMAKE_BUILD_TYPE=pico -S . -B $(PICO_BUILD_DIR) && cmake --build $(PICO_BUILD_DIR)
+
+pico-adhoc:
 	cmake -S platform/pico -B $(PICO_BUILD_DIR) && cmake --build $(PICO_BUILD_DIR)
 
 _load-compile-commands: # If clangd cant find headers, run this command
