@@ -1,22 +1,6 @@
-/*
- * Copyright (c) 2021 Arm Limited and Contributors. All rights reserved.
- *
- * SPDX-License-Identifier: Apache-2.0
- *
- */
-
-#include "st7789.hpp"
-#include "hardware/gpio.h"
+#include "st7789.h"
 #include "pico/stdlib.h"
-#include <cstdint>
-#include <cstring>
 #include <string.h>
-
-/**
- * @brief command data type definition
- */
-#define ST7789_CMD 0  /**< command type */
-#define ST7789_DATA 1 /**< data type */
 
 /**
  * @brief chip command definition
@@ -96,9 +80,11 @@
 #define ST7789_CMD_PROMACT 0xFE  /**< program action command */
 
 static struct st7789_config st7789_cfg;
+static bool st7789_data_mode = false;
+
 static uint16_t st7789_width;
 static uint16_t st7789_height;
-static bool st7789_data_mode = false;
+uint16_t back_buffer[ST77899V_WIDTH * ST77899V_HEIGHT];
 
 static void st7789_cmd(uint8_t cmd, const uint8_t *data, size_t len) {
   if (st7789_cfg.gpio_cs > -1) {
@@ -135,25 +121,23 @@ static void st7789_cmd(uint8_t cmd, const uint8_t *data, size_t len) {
 
 void st7789_caset(uint16_t xs, uint16_t xe) {
   uint8_t data[] = {
-      static_cast<uint8_t>(xs >> 8),
-      static_cast<uint8_t>(xs & 0xff),
-      static_cast<uint8_t>(xe >> 8),
-      static_cast<uint8_t>(xe & 0xff),
+      (xs >> 8),
+      (xs & 0xff),
+      (xe >> 8),
+      (xe & 0xff),
   };
 
-  // CASET (2Ah): Column Address Set
   st7789_cmd(ST7789_CMD_CASET, data, sizeof(data));
 }
 
 void st7789_raset(uint16_t ys, uint16_t ye) {
   uint8_t data[] = {
-      static_cast<uint8_t>(ys >> 8),
-      static_cast<uint8_t>(ys & 0xff),
-      static_cast<uint8_t>(ye >> 8),
-      static_cast<uint8_t>(ye & 0xff),
+      (ys >> 8),
+      (ys & 0xff),
+      (ye >> 8),
+      (ye & 0xff),
   };
 
-  // RASET (2Bh): Row Address Set
   st7789_cmd(ST7789_CMD_RASET, data, sizeof(data));
 }
 
@@ -194,11 +178,9 @@ void st7789_init(const struct st7789_config *config, uint16_t width,
   gpio_put(st7789_cfg.gpio_rst, 1);
   sleep_ms(100);
 
-  // SWRESET (01h): Software Reset
   st7789_cmd(ST7789_CMD_SWRESET, NULL, 0);
   sleep_ms(150);
 
-  // SLPOUT (11h): Sleep Out
   st7789_cmd(ST7789_CMD_SLPOUT, NULL, 0);
   sleep_ms(50);
 
@@ -222,15 +204,12 @@ void st7789_init(const struct st7789_config *config, uint16_t width,
   st7789_caset(0, width);
   st7789_raset(0, height);
 
-  // INVON (21h): Display Inversion On
   st7789_cmd(ST7789_CMD_INVON, NULL, 0);
   sleep_ms(10);
 
-  // NORON (13h): Normal Display Mode On
   st7789_cmd(ST7789_CMD_NORON, NULL, 0);
   sleep_ms(10);
 
-  // DISPON (29h): Display On
   st7789_cmd(ST7789_CMD_DISPON, NULL, 0);
   sleep_ms(10);
 
@@ -245,7 +224,6 @@ void st7789_ramwr() {
   gpio_put(st7789_cfg.gpio_dc, 0);
   sleep_us(1);
 
-  // RAMWR (2Ch): Memory Write
   uint8_t cmd = ST7789_CMD_RAMWR;
   spi_write_blocking(st7789_cfg.spi, &cmd, sizeof(cmd));
 
@@ -270,46 +248,60 @@ void st7789_write(const uint16_t *data, size_t len) {
     st7789_data_mode = true;
   }
 
-  // spi_write_blocking(st7789_cfg.spi, data, len);
   spi_write16_blocking(st7789_cfg.spi, data, len / 2);
 }
-
-// void st7789_fill(uint8_t pixel) {
-//   int num_pixels = st7789_width * st7789_height;
-
-//   st7789_set_cursor(0, 0, st7789_width, st7789_height);
-
-//   for (int i = 0; i < num_pixels; i++) {
-//     st7789_write(&pixel, sizeof(pixel));
-//   }
-// }
-// void st7789_fill(uint8_t color) {
-//   uint8_t data[st7789_width * st7789_height * 2];
-//   for (int i = 0; i < st7789_width * st7789_height * 2; i += 2) {
-//     data[i] = color;     // High byte of color
-//     data[i + 1] = color; // Low byte of color
-//   }
-
-//   st7789_set_cursor(0, 0, st7789_width - 1, st7789_height - 1);
-//   st7789_write(data, sizeof(data));
-// }
 
 void st7789_set_cursor(uint16_t xs, uint16_t ys, uint16_t xe, uint16_t ye) {
   st7789_caset(xs, xe);
   st7789_raset(ys, ye);
 }
 
-uint16_t back_buffer[240 * 320];
+// Not Optmized - easy to read
+// void st7789_draw_sprite(uint16_t x, uint16_t y, const uint16_t *sprite_data,
+//                         uint16_t sprite_width, uint16_t sprite_height) {
+//   // Draw the sprite onto the back buffer with boundary checking
+//   for (int j = 0; j < sprite_height; ++j) {
+//     for (int i = 0; i < sprite_width; ++i) {
+//       // Calculate the position in the back buffer
+//       int buffer_x = x + i;
+//       int buffer_y = y + j;
 
+//       // Check if the position is within the bounds of the back buffer
+//       if (buffer_x < st7789_width && buffer_y < st7789_height) {
+//         // Place the pixel from the sprite directly into the back buffer
+//         back_buffer[buffer_y * st7789_width + buffer_x] =
+//             sprite_data[j * sprite_width + i];
+//       }
+//     }
+//   }
+// }
+
+// Optmized - hard to read
 void st7789_draw_sprite(uint16_t x, uint16_t y, const uint16_t *sprite_data,
                         uint16_t sprite_width, uint16_t sprite_height) {
-  // Draw the sprite onto the back buffer
-  for (int j = 0; j < sprite_height; ++j) {
-    for (int i = 0; i < sprite_width; ++i) {
+  // Calculate the start and end points, clipping to the display boundaries
+  uint16_t x_start = (x < st7789_width) ? x : st7789_width;
+  uint16_t y_start = (y < st7789_height) ? y : st7789_height;
+  uint16_t x_end =
+      (x + sprite_width < st7789_width) ? x + sprite_width : st7789_width;
+  uint16_t y_end =
+      (y + sprite_height < st7789_height) ? y + sprite_height : st7789_height;
+
+  // Adjust sprite data offset for clipping
+  const uint16_t *sprite_ptr =
+      sprite_data + (y_start - y) * sprite_width + (x_start - x);
+
+  // Pointers to the back buffer
+  uint16_t *buffer_ptr = back_buffer + y_start * st7789_width + x_start;
+
+  for (uint16_t j = y_start; j < y_end; ++j) {
+    for (uint16_t i = x_start; i < x_end; ++i) {
       // Place the pixel from the sprite directly into the back buffer
-      back_buffer[(y + j) * st7789_width + (x + i)] =
-          sprite_data[j * sprite_width + i];
+      *buffer_ptr++ = *sprite_ptr++;
     }
+    // Move to the next line in both the back buffer and sprite
+    buffer_ptr += (st7789_width - (x_end - x_start));
+    sprite_ptr += (sprite_width - (x_end - x_start));
   }
 }
 

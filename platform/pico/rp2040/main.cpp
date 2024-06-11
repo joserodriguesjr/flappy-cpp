@@ -1,23 +1,5 @@
-// #include <stdio.h>
-// #include <math.h>
-
-// #include "hardware/pio.h"
-// #include "hardware/gpio.h"
-// #include "hardware/interp.h"
-
-#include "pico/stdio.h"
 #include "pico/stdlib.h"
-#include "pico/time.h"
-#include "st7789.hpp"
-#include <cstdint>
-#include <cstdlib>
-#include <stdlib.h>
-
-#define LCD_WIDTH 240
-#define LCD_HEIGHT 320
-
-#define LEFT_BUTTON 6
-#define RIGHT_BUTTON 7
+#include "st7789.h"
 
 #define BLACK 0x00
 #define WHITE 0xFF
@@ -209,40 +191,38 @@ const struct st7789_config lcd_config = {
 int main() {
   stdio_init_all();
 
-  // initialize the lcd
-  st7789_init(&lcd_config, LCD_WIDTH, LCD_HEIGHT);
+  st7789_init(&lcd_config, ST77899V_WIDTH, ST77899V_HEIGHT);
 
   // We are using the button to pull down to 0v when pressed, so ensure that
   // when unpressed, it uses internal pull ups. Otherwise when unpressed, the
   // input will be floating.
-  gpio_init(LEFT_BUTTON);
-  gpio_set_dir(LEFT_BUTTON, GPIO_IN);
-  gpio_pull_up(LEFT_BUTTON);
-  gpio_init(RIGHT_BUTTON);
-  gpio_set_dir(RIGHT_BUTTON, GPIO_IN);
-  gpio_pull_up(RIGHT_BUTTON);
+  gpio_init(BUTTON1_LEFT);
+  gpio_set_dir(BUTTON1_LEFT, GPIO_IN);
+  gpio_pull_up(BUTTON1_LEFT);
+  gpio_init(BUTTON2_RIGHT);
+  gpio_set_dir(BUTTON2_RIGHT, GPIO_IN);
+  gpio_pull_up(BUTTON2_RIGHT);
 
   const uint16_t GRAVITY = 1500;
   float jumpSpeed = 350;
-  float sprite_x, sprite_y, sprite_width, sprite_height, velocity_y;
 
-  sprite_x = LCD_WIDTH / 3;
-  sprite_y = LCD_HEIGHT / 2;
-  velocity_y = 0;
+  float sprite_x = ST77899V_WIDTH / 2;
+  float sprite_y = ST77899V_HEIGHT / 2;
+  float velocity_y = 0;
+  bool axis = false;
 
-  sprite_width = FLAPPY_WIDTH;
-  sprite_height = FLAPPY_HEIGHT;
-
-  static int framesCounter, sprite_index;
+  float sprite_width = FLAPPY_WIDTH;
+  float sprite_height = FLAPPY_HEIGHT;
 
   uint16_t *flappy_sprites[NUM_SPRITES];
   flappy_sprites[0] = (uint16_t *)flappy1;
   flappy_sprites[1] = (uint16_t *)flappy2;
   flappy_sprites[2] = (uint16_t *)flappy3;
-
   uint16_t *fsm_ptr = flappy_sprites[0];
 
   static float deltaTime = 0.016;
+  static int framesCounter, sprite_index;
+
   while (1) {
     framesCounter++;
     if (framesCounter >= (60 / 6)) {
@@ -254,20 +234,18 @@ int main() {
       fsm_ptr = flappy_sprites[sprite_index];
     }
 
-    if (!gpio_get(LEFT_BUTTON)) {
-      // make screen WHITE
-      // for (int y = 0; y < LCD_HEIGHT; y++) {
-      //   for (int x = 0; x < LCD_WIDTH; x++) {
-      //     st7789_draw_pixel(x, y, BLACK);
-      //   }
-      // }
-    } else if (!gpio_get(RIGHT_BUTTON)) {
+    if (!gpio_get(BUTTON1_LEFT)) {
+      axis = !axis;
+    } else if (!gpio_get(BUTTON2_RIGHT)) {
       velocity_y = -jumpSpeed;
-      // Define the position and size of the sprite
     }
-
     velocity_y += GRAVITY * deltaTime;
-    sprite_y += velocity_y * deltaTime;
+
+    if (axis) {
+      sprite_x += velocity_y * deltaTime;
+    } else {
+      sprite_y += velocity_y * deltaTime;
+    }
 
     st7789_update_display(sprite_x, sprite_y, fsm_ptr, sprite_width,
                           sprite_height);
