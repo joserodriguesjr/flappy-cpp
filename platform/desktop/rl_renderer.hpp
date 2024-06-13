@@ -62,6 +62,7 @@ public:
   };
 
   void setFPS(int fps) override { SetTargetFPS(fps); }
+  void drawFPS(int posX, int posY) override { DrawFPS(posX, posY); }
   float getDeltaTime() override { return GetFrameTime(); }
 
   virtual void drawTexture(Texture2D texture, int posX, int posY,

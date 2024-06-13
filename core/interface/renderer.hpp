@@ -94,6 +94,7 @@ public:
   virtual Texture2D loadTexture2DFromImage(Image image) = 0;
 
   virtual void setFPS(int fps) = 0;
+  virtual void drawFPS(int posX, int posY) = 0;
   virtual float getDeltaTime() = 0;
 
   // Texture drawing functions
