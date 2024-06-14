@@ -1,6 +1,6 @@
 #pragma once
 
-class IComponent {
+class ComponentInterface {
 public:
-  virtual ~IComponent() = default;
+  virtual ~ComponentInterface() = default;
 };

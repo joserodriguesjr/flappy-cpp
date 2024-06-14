@@ -11,7 +11,7 @@ struct PSParams {
   float timeScaleFactor;
 };
 
-class PhysicsSystem : public System {
+class PhysicsSystem : public SystemInterface {
 private:
   float gravity;
   float timeScaleFactor;

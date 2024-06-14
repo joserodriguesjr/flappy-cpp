@@ -7,7 +7,7 @@
 
 struct CSParams {};
 
-class CollisionSystem : public System {
+class CollisionSystem : public SystemInterface {
 public:
   CollisionSystem(CSParams p) {}
 

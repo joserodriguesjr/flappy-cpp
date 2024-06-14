@@ -8,7 +8,7 @@ struct TCParams {
   float scaleX, scaleY, scaleZ;
 };
 
-class TransformComponent : public IComponent {
+class TransformComponent : public ComponentInterface {
 public:
   float x, y, z;
   float rotation;

@@ -11,7 +11,8 @@
 
 class Entity {
 private:
-  std::unordered_map<std::type_index, std::unique_ptr<IComponent>> components;
+  std::unordered_map<std::type_index, std::unique_ptr<ComponentInterface>>
+      components;
   std::unordered_map<std::type_index, std::function<void(Entity *)>> events;
 
 public:
@@ -36,7 +37,7 @@ public:
     events[typeid(T)] = event;
   }
 
-  // can be null
+  // todo: can be null
   template <typename T> void runEvent(Entity *other) {
     auto it = events.find(typeid(T));
     if (it != events.end()) {

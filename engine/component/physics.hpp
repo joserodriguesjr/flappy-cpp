@@ -7,7 +7,7 @@ struct PCParams {
   bool movableX, movableY;
 };
 
-class PhysicsComponent : public IComponent {
+class PhysicsComponent : public ComponentInterface {
 public:
   float mass;
   float velocityX, velocityY;

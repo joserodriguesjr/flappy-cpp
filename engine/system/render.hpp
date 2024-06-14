@@ -11,7 +11,7 @@ struct RSParams {
   float height;
 };
 
-class RenderSystem : public System {
+class RenderSystem : public SystemInterface {
 private:
   bool debug;
   int width;

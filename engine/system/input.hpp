@@ -8,7 +8,7 @@
 
 struct ISParams {};
 
-class InputSystem : public System {
+class InputSystem : public SystemInterface {
 public:
   InputSystem(ISParams p){};
 

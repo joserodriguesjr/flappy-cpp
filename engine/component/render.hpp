@@ -11,7 +11,7 @@ struct RCParams {
   Tint tint;
 };
 
-class RenderComponent : public IComponent {
+class RenderComponent : public ComponentInterface {
 public:
   const char *path;
   bool incline;

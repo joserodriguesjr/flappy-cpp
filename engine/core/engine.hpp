@@ -9,7 +9,7 @@
 
 class GameEngine {
 private:
-  std::vector<std::unique_ptr<System>> systems;
+  std::vector<std::unique_ptr<SystemInterface>> systems;
   std::vector<std::unique_ptr<Entity>> entities;
 
   void organizeZIndex();

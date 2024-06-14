@@ -7,7 +7,7 @@ struct CCParams {
   bool useTexture;
 };
 
-class ColliderComponent : public IComponent {
+class ColliderComponent : public ComponentInterface {
 public:
   float width, height;
   bool useTexture;
