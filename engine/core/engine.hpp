@@ -14,10 +14,6 @@ private:
   void organizeZIndex();
 
 public:
-  // template <typename T, typename... Args> void addSystem(Args &&...args) {
-  //   systems.emplace_back(make_unique<T>(std::forward<Args>(args)...));
-  // }
-
   /**
    *  @brief  Add a system to the engine to be run on a loop.
    *
