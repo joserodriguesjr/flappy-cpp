@@ -26,5 +26,10 @@ public:
   // todo: substitute to add entity with template
   Entity &createEntity(std::string name);
 
+  //   Entity &GameEngine::createEntity(std::string name) {
+  //   entities.emplace_back(make_unique<Entity>(name));
+  //   return *entities.back();
+  // }
+
   void run();
 };

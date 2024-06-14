@@ -1,6 +1,6 @@
 #pragma once
 
-#include "component/collider.hpp"
+#include "component/collision.hpp"
 #include "component/render.hpp"
 #include "component/transform.hpp"
 #include "system/system.hpp"
@@ -14,33 +14,33 @@ public:
   void update(std::vector<std::unique_ptr<Entity>> &entities) override {
     for (size_t i = 0; i < entities.size(); ++i) {
       auto *entityA = entities[i].get();
-      auto *colliderA = entityA->getComponent<ColliderComponent>();
+      auto *collisionA = entityA->getComponent<CollisionComponent>();
       auto *transformA = entityA->getComponent<TransformComponent>();
 
-      if (!(colliderA && transformA))
+      if (!(collisionA && transformA))
         continue;
 
       for (size_t j = i + 1; j < entities.size(); ++j) {
         auto *entityB = entities[j].get();
-        auto *colliderB = entityB->getComponent<ColliderComponent>();
+        auto *collisionB = entityB->getComponent<CollisionComponent>();
         auto *transformB = entityB->getComponent<TransformComponent>();
 
-        if (!(colliderB && transformB))
+        if (!(collisionB && transformB))
           continue;
 
-        if (colliderA->useTexture) {
+        if (collisionA->useTexture) {
           auto *renderA = entityA->getComponent<RenderComponent>();
-          colliderA->width = renderA->texture.width;
-          colliderA->height = renderA->texture.height;
+          collisionA->width = renderA->texture.width;
+          collisionA->height = renderA->texture.height;
         }
 
-        if (colliderB->useTexture) {
+        if (collisionB->useTexture) {
           auto *renderA = entityB->getComponent<RenderComponent>();
-          colliderB->width = renderA->texture.width;
-          colliderB->height = renderA->texture.height;
+          collisionB->width = renderA->texture.width;
+          collisionB->height = renderA->texture.height;
         }
 
-        if (!hasCollision(colliderA, transformA, colliderB, transformB))
+        if (!hasCollision(collisionA, transformA, collisionB, transformB))
           continue;
 
         entityA->runEvent<CollisionSystem>(entityB);
@@ -50,15 +50,15 @@ public:
   }
 
 private:
-  bool hasCollision(ColliderComponent *colliderA,
+  bool hasCollision(CollisionComponent *collisionA,
                     TransformComponent *transformA,
-                    ColliderComponent *colliderB,
+                    CollisionComponent *collisionB,
                     TransformComponent *transformB) {
 
-    bool collisionX = transformA->x + colliderA->width >= transformB->x &&
-                      transformB->x + colliderB->width >= transformA->x;
-    bool collisionY = transformA->y + colliderA->height >= transformB->y &&
-                      transformB->y + colliderB->height >= transformA->y;
+    bool collisionX = transformA->x + collisionA->width >= transformB->x &&
+                      transformB->x + collisionB->width >= transformA->x;
+    bool collisionY = transformA->y + collisionA->height >= transformB->y &&
+                      transformB->y + collisionB->height >= transformA->y;
 
     return (collisionX && collisionY);
   }

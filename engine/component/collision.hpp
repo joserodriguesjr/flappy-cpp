@@ -7,11 +7,11 @@ struct CCParams {
   bool useTexture;
 };
 
-class ColliderComponent : public ComponentInterface {
+class CollisionComponent : public ComponentInterface {
 public:
   float width, height;
   bool useTexture;
 
-  ColliderComponent(CCParams p)
+  CollisionComponent(CCParams p)
       : width(p.width), height(p.height), useTexture(p.useTexture) {}
 };
