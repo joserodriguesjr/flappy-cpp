@@ -14,7 +14,7 @@ add_executable(engine)
 
 include_directories(../../platform ../../core ../../engine)
 
-target_sources(engine PRIVATE usage.cpp
+target_sources(engine PRIVATE main.cpp
     ../../engine/core/engine.cpp
     ../../core/interface/renderer.cpp
     ../../core/interface/inputer.cpp

@@ -55,7 +55,7 @@ int main() {
   player.addEvent<RenderSystem>([&](Entity *other) {
     auto transform = player.getComponent<TransformComponent>();
     auto physics = player.getComponent<PhysicsComponent>();
-    transform->rotation = physics->velocityY * 1.5;
+    transform->rotation = physics->velocityY * 1;
 
     std::cout << "Player rotation = " << transform->rotation << std::endl;
   });
