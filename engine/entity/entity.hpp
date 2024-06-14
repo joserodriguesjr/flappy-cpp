@@ -19,10 +19,6 @@ public:
   std::string name;
   Entity(std::string name) : name(name) {}
 
-  // template <typename T, typename... Args> void addComponent(Args &&...args) {
-  //   components[typeid(T)] = make_unique<T>(std::forward<Args>(args)...);
-  // }
-
   template <typename T, typename P> void addComponent(P params) {
     components[typeid(T)] = make_unique<T>(params);
   }

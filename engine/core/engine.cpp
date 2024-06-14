@@ -2,11 +2,6 @@
 #include "../core/interface/renderer.hpp"
 #include <algorithm>
 
-Entity &GameEngine::createEntity(std::string name) {
-  entities.emplace_back(make_unique<Entity>(name));
-  return *entities.back();
-}
-
 void GameEngine::organizeZIndex() {
   std::sort(
       entities.begin(), entities.end(),

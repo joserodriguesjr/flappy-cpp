@@ -9,17 +9,20 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Add source files
+file(GLOB_RECURSE SOURCES src/*.cpp include/*.hpp)
 
 add_executable(engine)
 
-include_directories(../../platform ../../core ../../engine)
+include_directories(../../platform ../../core ../../engine include)
 
-target_sources(engine PRIVATE main.cpp
+target_sources(engine PRIVATE 
+    main.cpp
+    ${SOURCES}
+    
     ../../engine/core/engine.cpp
     ../../core/interface/renderer.cpp
     ../../core/interface/inputer.cpp
-    # core/engine.cpp
-    # core/engine.cpp
     )
 
 include(../../_cmake/CPM.cmake)
