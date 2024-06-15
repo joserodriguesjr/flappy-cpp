@@ -30,8 +30,8 @@ public:
         if (!hasCollision(collisionA, transformA, collisionB, transformB))
           continue;
 
-        entityA->runEvent<CollisionSystem>(entityB);
-        entityB->runEvent<CollisionSystem>(entityA);
+        runEntityDeferredEvent<CollisionSystem>(entityA, entityB);
+        runEntityDeferredEvent<CollisionSystem>(entityB, entityA);
       }
     }
   }

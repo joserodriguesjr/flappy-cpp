@@ -27,7 +27,7 @@ Player::Player(std::string name) : Entity(name) {
     collision->height = collision->height * 0.75;
   });
 
-  addEvent<CollisionSystem>([&](Entity *other) {
+  addDeferredEvent<CollisionSystem>([&](Entity *other) {
     auto physics = getComponent<PhysicsComponent>();
 
     if (!physics)
@@ -41,7 +41,7 @@ Player::Player(std::string name) : Entity(name) {
     }
   });
 
-  addEvent<RenderSystem>([&](Entity *other) {
+  addDeferredEvent<RenderSystem>([&](Entity *_) {
     auto transform = getComponent<TransformComponent>();
     auto physics = getComponent<PhysicsComponent>();
 

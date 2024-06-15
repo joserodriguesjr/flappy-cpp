@@ -33,8 +33,6 @@ public:
       if (!(render && transform))
         continue;
 
-      entity->runEvent<RenderSystem>(entity);
-
       if (debug) {
         auto *collision = entity->getComponent<CollisionComponent>();
 
@@ -49,6 +47,8 @@ public:
       drawEntity(renderer, transform, render->texture.width,
                  render->texture.height, render->tint, render->incline,
                  render->texture);
+
+      runEntityDeferredEvent<RenderSystem>(entity, entity);
     }
 
     if (showFPS)
