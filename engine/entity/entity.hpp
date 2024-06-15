@@ -7,17 +7,17 @@
 
 #include "../component/component.hpp"
 #include "../utils/memory.hpp"
-#include "component/transform.hpp"
 
 class Entity {
 private:
   std::unordered_map<std::type_index, std::unique_ptr<ComponentInterface>>
       components;
   std::unordered_map<std::type_index, std::function<void(Entity *)>> events;
+  std::unordered_map<std::string, std::function<void(void)>> setupFunctions;
 
 public:
-  std::string name;
   Entity(std::string name) : name(name) {}
+  std::string name;
 
   template <typename T, typename P> void addComponent(P params) {
     components[typeid(T)] = make_unique<T>(params);
@@ -27,6 +27,19 @@ public:
     auto it = components.find(typeid(T));
     return it != components.end() ? dynamic_cast<T *>(it->second.get())
                                   : nullptr;
+  }
+
+  template <typename T> void removeComponent() { components.erase(typeid(T)); }
+
+  void addSetupFunction(std::string setupName,
+                        std::function<void(void)> setupFn) {
+    setupFunctions[setupName] = setupFn;
+  }
+
+  void runSetupFunctions() {
+    for (auto setupFn : setupFunctions) {
+      setupFn.second();
+    }
   }
 
   template <typename T> void addEvent(std::function<void(Entity *)> event) {
@@ -39,12 +52,5 @@ public:
     if (it != events.end()) {
       it->second(other);
     }
-  }
-
-  static bool compareByZIndex(const std::unique_ptr<Entity> &a,
-                              const std::unique_ptr<Entity> &b) {
-    TransformComponent *transformA = a->getComponent<TransformComponent>();
-    TransformComponent *transformB = b->getComponent<TransformComponent>();
-    return (transformA && transformB) ? (transformA->z < transformB->z) : false;
   }
 };

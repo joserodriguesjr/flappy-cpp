@@ -1,7 +1,6 @@
 #pragma once
 
 #include "component/collision.hpp"
-#include "component/render.hpp"
 #include "component/transform.hpp"
 #include "system/system.hpp"
 
@@ -27,18 +26,6 @@ public:
 
         if (!(collisionB && transformB))
           continue;
-
-        if (collisionA->useTexture) {
-          auto *renderA = entityA->getComponent<RenderComponent>();
-          collisionA->width = renderA->texture.width;
-          collisionA->height = renderA->texture.height;
-        }
-
-        if (collisionB->useTexture) {
-          auto *renderA = entityB->getComponent<RenderComponent>();
-          collisionB->width = renderA->texture.width;
-          collisionB->height = renderA->texture.height;
-        }
 
         if (!hasCollision(collisionA, transformA, collisionB, transformB))
           continue;

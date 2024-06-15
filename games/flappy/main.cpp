@@ -13,13 +13,13 @@ int main() {
   GameEngine engine;
 
   engine.addSystem<PhysicsSystem, PSParams>(PSParams{9.8, 10});
-  engine.addSystem<RenderSystem, RSParams>(RSParams{true, 1200, 800});
+  engine.addSystem<RenderSystem, RSParams>(RSParams{true, true, 1200, 800});
   engine.addSystem<InputSystem, ISParams>({});
   engine.addSystem<CollisionSystem, CSParams>({});
 
   engine.addEntity<Player>("Player");
-  engine.addEntity<Pipe>("Pipe");
   engine.addEntity<Ground>("Ground");
+  engine.addEntity<Pipe>("Pipe");
   engine.addEntity<Roof>("Roof");
 
   engine.run();

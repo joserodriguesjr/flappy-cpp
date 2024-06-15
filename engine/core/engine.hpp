@@ -3,15 +3,14 @@
 #include "../entity/entity.hpp"
 #include "../system/system.hpp"
 
-#include <memory>
-#include <vector>
-
 class GameEngine {
 private:
   std::vector<std::unique_ptr<SystemInterface>> systems;
   std::vector<std::unique_ptr<Entity>> entities;
 
   void organizeZIndex();
+  void changeCollisionTextures();
+  void runEntitiesSetup();
 
 public:
   /**

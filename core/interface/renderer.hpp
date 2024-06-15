@@ -118,6 +118,9 @@ public:
                              Tint tint) = 0;
   // Draw a color-filled rectangle
   virtual void drawRectangleRec(Rectangle rec, Tint tint) = 0;
+  // Draw a color-filled rectangle with pro parameters
+  virtual void drawRectanglePro(Rectangle rec, Vector2 origin, float rotation,
+                                Tint tint) = 0;
 
   // Text drawing functions
 

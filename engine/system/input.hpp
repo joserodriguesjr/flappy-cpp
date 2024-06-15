@@ -1,8 +1,11 @@
 #pragma once
 
 #include "../core/interface/inputer.hpp"
+#include "component/input.hpp"
 #include "component/physics.hpp"
+#include "component/transform.hpp"
 #include "system.hpp"
+#include <raylib.h>
 
 // enum class Key { Up, Down, Left, Right };
 
@@ -15,17 +18,24 @@ public:
   void update(std::vector<std::unique_ptr<Entity>> &entities) override {
     for (auto &entityPtr : entities) {
       auto *entity = entityPtr.get();
+      auto *input = entity->getComponent<InputComponent>();
       auto *physics = entity->getComponent<PhysicsComponent>();
+      auto *transform = entity->getComponent<TransformComponent>();
 
-      if (!physics)
+      if (!input)
         continue;
 
-      handleInput(physics);
+      handleInput(physics, transform);
     }
   }
 
-  void handleInput(PhysicsComponent *physics) {
+  void handleInput(PhysicsComponent *physics, TransformComponent *transform) {
     Inputer &inputer = Inputer::instance();
+
+    if (IsKeyPressed(KEY_UP) && physics->movableY)
+      transform->y -= 4;
+    if (IsKeyPressed(KEY_DOWN) && physics->movableY)
+      transform->y += 4;
 
     if (inputer.isPressed(JUMP))
       physics->velocityY = -30;
