@@ -9,12 +9,6 @@
 #include "utils/memory.hpp"
 
 class Entity {
-private:
-  std::unordered_map<std::type_index, std::unique_ptr<ComponentInterface>>
-      components;
-  std::unordered_map<std::type_index, std::function<void(Entity *)>> events;
-  std::unordered_map<std::string, std::function<void(void)>> setupFunctions;
-
 public:
   Entity(std::string name) : name(name) {}
   std::string name;
@@ -53,4 +47,10 @@ public:
       it->second(other);
     }
   }
+
+private:
+  std::unordered_map<std::type_index, std::unique_ptr<ComponentInterface>>
+      components;
+  std::unordered_map<std::type_index, std::function<void(Entity *)>> events;
+  std::unordered_map<std::string, std::function<void(void)>> setupFunctions;
 };

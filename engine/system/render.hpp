@@ -14,6 +14,49 @@ struct RSParams {
 };
 
 class RenderSystem : public SystemInterface {
+public:
+  RenderSystem(RSParams p)
+      : debug(p.debug), showFPS(p.showFPS), width(p.width), height(p.height) {
+    Renderer::instance().init(width, height);
+  }
+  ~RenderSystem() { Renderer::instance().close(); }
+
+  void update(std::vector<std::unique_ptr<Entity>> &entities) override {
+    Renderer &renderer = Renderer::instance();
+    renderer.clear();
+
+    for (auto &entityPtr : entities) {
+      Entity *entity = entityPtr.get();
+      auto *render = entity->getComponent<RenderComponent>();
+      auto *transform = entity->getComponent<TransformComponent>();
+
+      if (!(render && transform))
+        continue;
+
+      entity->runEvent<RenderSystem>(entity);
+
+      if (debug) {
+        auto *collision = entity->getComponent<CollisionComponent>();
+
+        if (collision)
+          drawCollisionBox(renderer, transform, collision->width,
+                           collision->height, RED, render->incline);
+        else
+          drawCollisionBox(renderer, transform, render->texture.width,
+                           render->texture.height, BLUE, render->incline);
+      }
+
+      drawEntity(renderer, transform, render->texture.width,
+                 render->texture.height, render->tint, render->incline,
+                 render->texture);
+    }
+
+    if (showFPS)
+      renderer.drawFPS(10, 10);
+
+    renderer.draw();
+  }
+
 private:
   bool debug;
   bool showFPS;
@@ -62,48 +105,5 @@ private:
       // Draw the rectangle without rotation
       renderer.drawTexture(texture, transform->x, transform->y, tint);
     }
-  }
-
-public:
-  RenderSystem(RSParams p)
-      : debug(p.debug), showFPS(p.showFPS), width(p.width), height(p.height) {
-    Renderer::instance().init(width, height);
-  }
-  ~RenderSystem() { Renderer::instance().close(); }
-
-  void update(std::vector<std::unique_ptr<Entity>> &entities) override {
-    Renderer &renderer = Renderer::instance();
-    renderer.clear();
-
-    for (auto &entityPtr : entities) {
-      Entity *entity = entityPtr.get();
-      auto *render = entity->getComponent<RenderComponent>();
-      auto *transform = entity->getComponent<TransformComponent>();
-
-      if (!(render && transform))
-        continue;
-
-      entity->runEvent<RenderSystem>(entity);
-
-      if (debug) {
-        auto *collision = entity->getComponent<CollisionComponent>();
-
-        if (collision)
-          drawCollisionBox(renderer, transform, collision->width,
-                           collision->height, RED, render->incline);
-        else
-          drawCollisionBox(renderer, transform, render->texture.width,
-                           render->texture.height, BLUE, render->incline);
-      }
-
-      drawEntity(renderer, transform, render->texture.width,
-                 render->texture.height, render->tint, render->incline,
-                 render->texture);
-    }
-
-    if (showFPS)
-      renderer.drawFPS(10, 10);
-
-    renderer.draw();
   }
 };

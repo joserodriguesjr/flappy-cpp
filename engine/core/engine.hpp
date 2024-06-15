@@ -4,14 +4,6 @@
 #include "system/systemInterface.hpp"
 
 class GameEngine {
-private:
-  std::vector<std::unique_ptr<SystemInterface>> systems;
-  std::vector<std::unique_ptr<Entity>> entities;
-
-  void organizeZIndex();
-  void changeCollisionTextures();
-  void runEntitiesSetup();
-
 public:
   /**
    *  @brief  Add a system to the engine to be run on a loop.
@@ -47,4 +39,12 @@ public:
    *  systems.
    */
   void run();
+
+private:
+  std::vector<std::unique_ptr<SystemInterface>> systems;
+  std::vector<std::unique_ptr<Entity>> entities;
+
+  void organizeZIndex();
+  void changeCollisionTextures();
+  void runEntitiesSetup();
 };

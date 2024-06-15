@@ -4,21 +4,6 @@
 #include <unordered_map>
 
 class ResourceManager {
-private:
-  ResourceManager() {}
-  ~ResourceManager() { unloadAllTextures(); }
-
-  ResourceManager(const ResourceManager &) = delete;
-
-  std::unordered_map<std::string, Texture2D> textures;
-
-  void unloadAllTextures() {
-    for (auto &pair : textures) {
-      Renderer::instance().unloadTexture2D(pair.second);
-    }
-    textures.clear();
-  }
-
 public:
   static ResourceManager &getInstance() {
     static ResourceManager instance;
@@ -34,5 +19,20 @@ public:
       textures[path] = texture;
       return texture;
     }
+  }
+
+private:
+  ResourceManager() {}
+  ~ResourceManager() { unloadAllTextures(); }
+
+  ResourceManager(const ResourceManager &) = delete;
+
+  std::unordered_map<std::string, Texture2D> textures;
+
+  void unloadAllTextures() {
+    for (auto &pair : textures) {
+      Renderer::instance().unloadTexture2D(pair.second);
+    }
+    textures.clear();
   }
 };

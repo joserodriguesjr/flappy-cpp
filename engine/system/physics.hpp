@@ -11,10 +11,6 @@ struct PSParams {
 };
 
 class PhysicsSystem : public SystemInterface {
-private:
-  float gravity;
-  float timeScaleFactor;
-
 public:
   PhysicsSystem(PSParams p)
       : gravity(p.gravity), timeScaleFactor(p.timeScaleFactor){};
@@ -43,4 +39,8 @@ public:
       }
     }
   }
+
+private:
+  float gravity;
+  float timeScaleFactor;
 };
