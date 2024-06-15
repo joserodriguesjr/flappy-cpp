@@ -1,6 +1,6 @@
 #pragma once
 
-#include "component.hpp"
+#include "componentInterface.hpp"
 
 struct ICParams {};
 

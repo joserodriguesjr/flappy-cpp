@@ -5,8 +5,8 @@
 #include <typeindex>
 #include <unordered_map>
 
-#include "../component/component.hpp"
-#include "../utils/memory.hpp"
+#include "component/componentInterface.hpp"
+#include "utils/memory.hpp"
 
 class Entity {
 private:

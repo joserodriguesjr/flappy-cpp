@@ -2,7 +2,7 @@
 
 #include "component/collision.hpp"
 #include "component/transform.hpp"
-#include "system/system.hpp"
+#include "system/systemInterface.hpp"
 
 struct CSParams {};
 

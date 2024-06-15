@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../entity/entity.hpp"
-#include "../system/system.hpp"
+#include "entity/entity.hpp"
+#include "system/systemInterface.hpp"
 
 class GameEngine {
 private:

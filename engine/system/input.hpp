@@ -1,11 +1,12 @@
 #pragma once
 
+#include "raylib.h"
+
 #include "../core/interface/inputer.hpp"
 #include "component/input.hpp"
 #include "component/physics.hpp"
 #include "component/transform.hpp"
-#include "system.hpp"
-#include <raylib.h>
+#include "system/systemInterface.hpp"
 
 // enum class Key { Up, Down, Left, Right };
 

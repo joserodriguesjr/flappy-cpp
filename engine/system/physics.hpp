@@ -3,8 +3,7 @@
 #include "../core/interface/renderer.hpp"
 #include "component/physics.hpp"
 #include "component/transform.hpp"
-#include "system.hpp"
-#include <vector>
+#include "system/systemInterface.hpp"
 
 struct PSParams {
   float gravity;

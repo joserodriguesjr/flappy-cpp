@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../entity/entity.hpp"
+#include "entity/entity.hpp"
 #include <vector>
 
 class SystemInterface {

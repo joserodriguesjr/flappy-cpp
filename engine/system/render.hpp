@@ -4,9 +4,7 @@
 #include "component/render.hpp"
 #include "component/transform.hpp"
 #include "resource/resource_manager.hpp"
-#include "system.hpp"
-#include <raylib.h>
-#include <vector>
+#include "system/systemInterface.hpp"
 
 struct RSParams {
   bool debug;
