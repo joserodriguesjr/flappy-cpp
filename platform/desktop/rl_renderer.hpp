@@ -129,6 +129,16 @@ public:
       break;
     };
   };
+  virtual void drawRectanglePro(Rectangle rec, Vector2 origin, float rotation,
+                                Tint tint) override {
+    switch (tint.type) {
+    case TintType::COLOR:
+      DrawRectanglePro(rec, origin, rotation, tint.color);
+      break;
+    case TintType::HEX:
+      break;
+    };
+  };
 
   virtual void drawText(const char *text, int posX, int posY, int fontSize,
                         Tint tint) override {
