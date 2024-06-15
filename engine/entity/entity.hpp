@@ -4,6 +4,7 @@
 #include <string>
 #include <typeindex>
 #include <unordered_map>
+#include <vector>
 
 #include "component/componentInterface.hpp"
 #include "utils/memory.hpp"
@@ -62,13 +63,14 @@ public:
    */
   template <typename T>
   void addDeferredEvent(std::function<void(Entity *)> event) {
-    deferredEvents[typeid(T)] = event;
+    deferredEvents[typeid(T)].emplace_back(event);
   }
 
 private:
   std::unordered_map<std::type_index, std::unique_ptr<ComponentInterface>>
       components;
-  std::unordered_map<std::type_index, std::function<void(Entity *)>>
+  std::unordered_map<std::type_index,
+                     std::vector<std::function<void(Entity *)>>>
       deferredEvents;
   std::unordered_map<std::string, std::function<void(void)>> setupFunctions;
 
@@ -83,7 +85,10 @@ private:
   template <typename T> void runDeferredEvent(Entity *other) {
     auto it = deferredEvents.find(typeid(T));
     if (it != deferredEvents.end()) {
-      it->second(other);
+      auto &events = it->second;
+      for (auto &event : events) {
+        event(other);
+      }
     }
   }
 
