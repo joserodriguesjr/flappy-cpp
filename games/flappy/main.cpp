@@ -1,4 +1,5 @@
 #include "core/engine.hpp"
+#include "system/animation.hpp"
 #include "system/collision.hpp"
 #include "system/input.hpp"
 #include "system/physics.hpp"
@@ -16,6 +17,7 @@ int main() {
   engine.addSystem<RenderSystem, RSParams>(RSParams{true, true, 1200, 800});
   engine.addSystem<InputSystem, ISParams>({});
   engine.addSystem<CollisionSystem, CSParams>({});
+  engine.addSystem<AnimationSystem, ASParams>({});
 
   engine.addEntity<Player>("Player");
   engine.addEntity<Ground>("Ground");

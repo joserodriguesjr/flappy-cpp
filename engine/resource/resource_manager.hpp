@@ -21,6 +21,17 @@ public:
     }
   }
 
+  Image getImage(const std::string &path) {
+    auto it = images.find(path);
+    if (it != images.end()) {
+      return it->second;
+    } else {
+      Image image = Renderer::instance().loadNewImage(path.c_str());
+      images[path] = image;
+      return image;
+    }
+  }
+
 private:
   ResourceManager() {}
   ~ResourceManager() { unloadAllTextures(); }
@@ -28,6 +39,7 @@ private:
   ResourceManager(const ResourceManager &) = delete;
 
   std::unordered_map<std::string, Texture2D> textures;
+  std::unordered_map<std::string, Image> images;
 
   void unloadAllTextures() {
     for (auto &pair : textures) {

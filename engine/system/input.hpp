@@ -1,7 +1,5 @@
 #pragma once
 
-#include "raylib.h"
-
 #include "../core/interface/inputer.hpp"
 #include "component/input.hpp"
 #include "component/physics.hpp"
@@ -23,7 +21,7 @@ public:
       auto *physics = entity->getComponent<PhysicsComponent>();
       auto *transform = entity->getComponent<TransformComponent>();
 
-      if (!input)
+      if (!(input && physics && transform))
         continue;
 
       handleInput(physics, transform);
@@ -32,11 +30,6 @@ public:
 
   void handleInput(PhysicsComponent *physics, TransformComponent *transform) {
     Inputer &inputer = Inputer::instance();
-
-    if (IsKeyPressed(KEY_UP) && physics->movableY)
-      transform->y -= 4;
-    if (IsKeyPressed(KEY_DOWN) && physics->movableY)
-      transform->y += 4;
 
     if (inputer.isPressed(JUMP))
       physics->velocityY = -30;
