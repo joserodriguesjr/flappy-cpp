@@ -7,6 +7,20 @@
 
 #include "../core/interface/renderer.hpp"
 
+void GameEngine::run() {
+  Renderer::instance().setFPS(60);
+
+  organizeZIndex();
+  changeCollisionTextures();
+  runEntitiesSetup();
+
+  while (true) {
+    for (auto &system : systems) {
+      system->update(entities);
+    }
+  }
+}
+
 bool compareByZIndex(const std::unique_ptr<Entity> &a,
                      const std::unique_ptr<Entity> &b) {
   TransformComponent *transformA = a->getComponent<TransformComponent>();
@@ -43,19 +57,5 @@ void GameEngine::runEntitiesSetup() {
   for (auto &entityPtr : entities) {
     Entity *entity = entityPtr.get();
     entity->runSetupFunctions();
-  }
-}
-
-void GameEngine::run() {
-  Renderer::instance().setFPS(60);
-
-  organizeZIndex();
-  changeCollisionTextures();
-  runEntitiesSetup();
-
-  while (true) {
-    for (auto &system : systems) {
-      system->update(entities);
-    }
   }
 }
