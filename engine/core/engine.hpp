@@ -6,7 +6,7 @@
 class GameEngine {
 public:
   /**
-   *  @brief  Add a system to the engine to be run on a loop.
+   *  @brief  Add a system to the engine to be updated on the gameloop.
    *
    *  Use like this:
    *  engine.addSystem<YourSystem, YourSystemParams>(YourSystemParams{x, y, z})
